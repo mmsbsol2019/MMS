@@ -1,0 +1,225 @@
+import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DataService } from '../services/data.service';
+import { HttpClient } from '@angular/common/http';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { IpcCal } from '../ipcCall';
+import { AppService } from '../app.service';
+import { SetData } from '../setData';
+
+
+@Component({
+  selector: 'app-vessel-user-config',
+  templateUrl: './vessel-user-config.component.html',
+  styleUrls: ['./vessel-user-config.component.scss'],
+  providers: [NgbModalConfig, NgbModal]
+})
+export class VesselUserConfigComponent implements OnInit {
+
+  selectedVessel: any;
+  keys: any = [];
+  usersDropListDisable: boolean;
+  nextButtonDisable: boolean;
+  vesselsInfoArray: any;
+  selectedUsers: any;
+  closeResult: string;
+  selectedUserArray: any = [];
+  selectedUserObject: any;
+  vslRecords: any;
+  vslArray:any[]=[];
+  userArray: any[]=[];
+  userIdArray:any[]=[];
+  people: { "name": string; }[];
+  vslRecordsArray: any;
+  selectedVesselDetails:any;
+  user=new FormControl();
+ 
+ 
+  
+  constructor(
+    private router: Router,
+    private data: DataService,
+    private httpService: HttpClient,
+    config: NgbModalConfig,
+    private modalService: NgbModal,
+    private ipc: IpcCal,
+    private ser: AppService,
+    private setData: SetData
+
+  ) {
+    
+
+    this.ipc.checkVesselAvail().then((value) => {
+      console.log(value)
+
+     // this.vslRecords=value;
+
+      this.vslRecords = 0;
+      if (this.vslRecords === 0) {
+
+        let a = this.ser.onRetrieveVesselInfo();
+        a.subscribe(res => {
+
+          console.log(res);        
+          console.log('SUCCESSFULLY VESSEL INFO INSERTED...')
+          
+          this.vslRecordsArray=res;
+          for(let i=0;i<this.vslRecordsArray.length;i++){
+            this.vslArray.push(this.vslRecordsArray[i].vesselName);
+            console.log(this.vslRecordsArray[i].vesselName);           
+          }
+          console.log( this.vslArray);
+          config.backdrop = 'static';
+          config.keyboard = false;
+          // this.httpService.get('./assets/array2.json').subscribe(
+          //   array => {
+          //     this.vesselsInfoArray = array;
+          //     for (let i = 0; i < this.vesselsInfoArray.length; i++) {
+          //       this.keys.push(Object.keys(this.vesselsInfoArray[i])[0]);
+          //     }
+          //   })
+        })
+      }
+      else {
+        this.router.navigate(['/login']);
+      }
+
+    })
+  }
+
+  selectVessel(event, vessel) {
+    this.selectedVessel = vessel;
+    console.log(vessel);
+    this.userArray=[];
+    let a=this.vslRecordsArray.filter(i=>i.vesselName==vessel);
+    console.log(a[0]);
+    for(let i=0;i<a[0].maUserVesselAccess.length;i++){
+      console.log(a[0].maUserVesselAccess[i].name);
+      this.userArray.push(a[0].maUserVesselAccess[i].name);
+    }
+    console.log(this.userArray);
+
+    // let a = this.vesselsInfoArray.filter(a => {
+    //   if (Object.keys(a)[0] == this.selectedVessel) {
+    //     this.selectedUserObject = (Object.values(a)[0]);
+    //     this.selectedUserArray = Object.values(this.selectedUserObject);  //convert object to array 
+    //   }
+    // });
+    this.usersDropListDisable = true;
+    this.nextButtonDisable = false;
+  }
+
+  selectUser() {
+    this.nextButtonDisable = true;
+  }
+
+  modalWindowModify() {
+    this.router.navigate(['/firstPage']);
+  }
+  modalWindowConfirm() {
+    this.router.navigate(['/login'])
+  }
+
+  
+  form = new FormGroup({
+    username: new FormControl('', Validators.required),
+    //vessel: new FormControl('', Validators.required),
+  });
+
+
+  // get username() {
+  //   return this.form.get('username');
+  // }
+
+  // nextButton(content) {
+  //   this.selectedUsers = this.form.value.username;
+  //   this.data.storage(this.selectedUsers);
+  //   this.modalService.open(content);
+  // }
+
+  openConfirmationModal(){
+    this.selectedUsers=this.form.value.username;
+  }
+
+  getUserId(){
+      console.log(this.selectedVessel);
+      console.log(this.form.value.username);
+    let tempArr=[];
+    this.userIdArray=[];
+    tempArr=this.form.value.username;
+    console.log(tempArr);
+    let a=this.vslRecordsArray.filter(i=>i.vesselName==this.selectedVessel);
+    console.log(a[0].maUserVesselAccess);
+    let q=a[0].maUserVesselAccess;
+
+    for(let i=0;i<tempArr.length;i++){
+      console.log(tempArr[i]);
+      console.log(q.filter(k=>k.name==tempArr[i]));
+      console.log(q.filter(k=>k.name==tempArr[i])[0].userId);
+      this.userIdArray.push(q.filter(k=>k.name==tempArr[i])[0].userId);
+    }
+    console.log("************************");
+   
+    this.selectedVesselDetails=a[0];
+    console.log(this.selectedVesselDetails);
+    console.log(this.userIdArray);
+  }
+
+  ngOnInit() {
+    
+    // this.usersArray=[
+    //   {
+    //     "vesselCode": "ESA",
+    //     "companyId": 1,
+    //     "vesselName": "EAST ASI",
+    //     "imoNumber": 5000,
+    //     "officialNumber": 600,
+    //     "activeStatus": "Y",
+    //     "userIns": "DBO",
+    //     "dateIns": "2019-06-07",
+    //     "maUserVesselAccess": [
+    //       {
+    //         "accessId": 3,
+    //         "userId": 103,
+    //         "vesselCode": "ESA",
+    //         "dateIns": "2019-06-07"
+           
+    //       },
+    //       {
+    //         "accessId": 4,
+    //         "userId": 104,
+    //         "vesselCode": "ESA",
+    //         "dateIns": "2019-06-07"
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     "vesselCode": "SPA",
+    //     "companyId": 1,
+    //     "vesselName": "ST PAULI",
+    //     "imoNumber": 4000,
+    //     "officialNumber": 500,
+    //    "activeStatus": "Y",
+    //     "userIns": "DBO",
+    //     "dateIns": "2019-06-07",
+    //     "maUserVesselAccess": [
+    //       {
+    //         "accessId": 1,
+    //         "userId": 101,
+    //         "vesselCode": "SPA",
+    //         "dateIns": "2019-06-07"
+    //       },
+    //       {
+    //         "accessId": 2,
+    //         "userId": 102,
+    //         "vesselCode": "SPA",
+    //         "dateIns": "2019-06-07"
+    //       }
+    //     ]
+    //   }
+    // ];
+    
+  }
+
+}

@@ -1,0 +1,75 @@
+const dbCon = require('./dbConnect')
+const ipcMain = require('electron').ipcMain
+const Constants = require('../DBConnection/constants')
+
+var ainfo=['AUDIT_TRACK_NO',1,'SPA',1,1,1,'1998-05-05','AUDIT_PORT',101,'CREATED_USER_ID'];
+
+var ma_def=['DEF_ID_01',1,'AUDIT_TRACK_NO',1,1,'ROO',1,'STATUS','DEF_TYPE','SASI@GMAIL.COM','2011-05-06'];
+
+var def=[123,'SPANAV003','NA','YES','Radar acceptable PM range value was not entered in Radar logBook',
+'2019-01-01','Radar log specification page filled properly & Radar acceptable PM range entered',
+'Radar log specification page to be verified by New joined officer','NA','YES','2018-03-03','Radar log specification page to be verified by New joined officer',
+'NA','Y','SASI@GMAIL.COM','1999-02-03'];
+
+ipcMain.on('check-username-password-request', (event, uname_pass) => {
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_LOGIN_USER, uname_pass)
+    .then((value) => {
+      event.sender.send('check-username-password-response', value)
+    }).then(() => {
+      dbCon.closeConnection();
+    })
+
+})
+
+ipcMain.on('get-audit-category-request', (event) => {
+
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_AUDIT_CATEGORY)
+    .then((value) => {
+      event.sender.send('get-audit-category-response', value)
+    }).then(() => {
+      dbCon.closeConnection();
+    })
+
+})
+
+ipcMain.on('find-vessel-info-request', (event, companyId) => {
+  var dataS;
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_VESSEL_DETAILS, companyId)
+    .then((value) => {
+      dataS = value;
+
+    }).then(() => {
+      dbCon.closeConnection();
+    }).then(() => {
+      dbCon.createConnection();
+      dbCon.executeQuery(Constants.FIND_AUDIT_TYPE)
+        .then((value) => {
+          dataS.push(value)
+        }).then(() => {
+          dbCon.closeConnection();
+        }).then(() => {
+          dbCon.createConnection();
+          dbCon.executeQuery(Constants.FIND_AUDIT_INTERVAL)
+            .then((value) => {
+              dataS.push(value)
+              event.sender.send('find-vessel-info-response', dataS)
+            }).then(() => {
+              dbCon.closeConnection();
+            })
+        })
+    })
+
+})
+
+ipcMain.on('get-deficiency-data-request', (event, data) => {
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_DEF, data)
+    .then((value) => {
+      event.sender.send('get-deficiency-data-response', value)
+    }).then(() => {
+      dbCon.closeConnection();
+    })
+})

@@ -1,0 +1,40 @@
+const dbCon = require('./dbConnect')
+const ipcMain = require('electron').ipcMain
+
+ipcMain.on('check-username-password-request', (event, query,uname_pass) => {
+
+  dbCon.createConnection();
+    dbCon.executeQuery(query,uname_pass)
+    .then((value) => {
+      event.sender.send('check-username-password-response',value)
+    }).then(()=>
+    {
+      dbCon.closeConnection();
+    })
+ 
+   })
+
+   ipcMain.on('get-audit-category-request', (event, query) => {
+
+    dbCon.createConnection();
+      dbCon.executeQuery(query)
+      .then((value) => {
+        event.sender.send('get-audit-category-response',value)
+      }).then(()=>
+      {
+        dbCon.closeConnection();
+      })
+   
+     })
+
+   ipcMain.on('find-vessel-info-request', (event, query,companyId) => {
+    dbCon.createConnection();
+    dbCon.executeQuery(query,companyId)
+    .then((value) => {
+      event.sender.send('find-vessel-info-response',value)
+    }).then(()=>
+    {
+      dbCon.closeConnection();
+    })
+  
+   })

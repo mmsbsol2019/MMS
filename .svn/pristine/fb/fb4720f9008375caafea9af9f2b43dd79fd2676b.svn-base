@@ -1,0 +1,81 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
+import { Router} from '@angular/router';
+import { LoginService } from "../login.service";
+import { ElectronService } from 'ngx-electron';
+// import { ToastrService } from 'ngx-toastr';      
+
+var CONST = require('../../../DBConnection/constants');
+import CONST from 'DBConnection/constants';
+//var CONST = require('../../../DBConnection/constants');
+
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
+})
+export class LoginComponent implements OnInit {
+
+  loggedInUser:string;
+  loginForm = new FormGroup({
+    userName: new FormControl(''),
+    passWord: new FormControl(''),
+  });
+
+  onSubmit() {
+
+    //ipcRenderer DB request start
+    if (this.electronService.isElectronApp) {
+      var param = [];
+      param.push(this.loginForm.value.userName)
+      param.push(this.loginForm.value.passWord)
+      this.electronService.ipcRenderer.send('check-username-password-request', CONST.FIND_LOGIN_USER,param)
+    }
+       //ipcRenderer DB request end
+
+        //ipcRenderer DB response start
+        this.electronService.ipcRenderer.once('check-username-password-response', (event, arg) => {
+        console.log(arg)
+        if (arg[0].isAvail == 0) {
+          this.login.loggedInUser(this.loginForm.value.userName)
+          this.router.navigate(['/dashboard']);
+        }
+        else {
+          alert('Invalid  usernaem pass')
+        }
+        //ipcRenderer DB response end
+        
+    })
+  }
+  constructor(
+    private router: Router,
+    private login: LoginService,
+    private electronService: ElectronService,
+    // private toastr: ToastrService
+  ) {   
+      //ipcRenderer DB response communication start
+    this.electronService.ipcRenderer.on('reply-check-username-password', (event, arg) => {
+    console.log(arg)
+    if (arg.isAvail == 1) {
+      this.login.loggedInUser(this.loginForm.value.userName)
+      this.router.navigate(['/createDeficiency']);
+     
+    }
+    else {
+     // alert('Invalid  usernaem pass')
+    // console.log("asdf");
+     // toastr.error("Error while creating user");
+    }
+      //ipcRenderer DB response communication end
+  })}
+ 
+
+  ngOnInit() {
+    this.login.currentUser.subscribe(loggedInUser => this.loggedInUser = loggedInUser);
+
+   
+    this.login.currentUser.subscribe(loggedInUser => this.loggedInUser = loggedInUser)
+  }
+
+}

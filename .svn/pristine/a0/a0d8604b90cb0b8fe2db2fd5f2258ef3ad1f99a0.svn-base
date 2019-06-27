@@ -1,0 +1,183 @@
+import { Component,OnInit  } from '@angular/core';
+import {FormControl,FormGroup, Validators} from '@angular/forms';
+import { IpcCal } from './ipcCall';
+import { AppService } from './app.service';
+import { SetData } from './setData';
+import { Router } from '@angular/router';
+
+
+export interface CategoryOfNC {
+  value: string;
+  viewValue: string;
+}
+
+export interface MncNcObs {
+  value: string;
+  viewValue: string;
+}
+export interface Food {
+  value: string;
+  viewValue: string;
+}
+
+export interface AcceptRevisedByCap {
+  value: string;
+  viewValue: string;
+}
+
+export interface RootCauseAnalysis {
+  value: string;
+  viewValue: string;
+}
+
+export interface Status {
+  value: string;
+  viewValue: string;
+}
+export interface Cause {
+  value: string;
+  viewValue: string;
+}
+
+
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent {
+    deficiencyCreateForm = new FormGroup({
+    serial_no: new FormControl(''),
+    details_of_nc: new FormControl(''),
+    corrective_action_plan: new FormControl(''),
+    accept_cap_by_auditor: new FormControl(''),
+    comments_by_auditor: new FormControl(''),
+    ship_revised_by_cap: new FormControl(''),
+    preventive_action: new FormControl(''),
+    remarks: new FormControl(''), 
+    error_check: new FormControl(''),
+    name_of_auditor: new FormControl(''),
+    target_date:new FormControl(''),
+    close_date:new FormControl(''),
+    audit_date:new FormControl(''),
+    category_of_nc:new FormControl(''),
+    code_ref_of_nc:new FormControl(''),
+    mnc_nc_obs:new FormControl(''),
+    accept_revised_cap_by_auditor:new FormControl(''),
+    root_cause_analysis:new FormControl(''),
+    cause:new FormControl(''),
+    status:new FormControl(''),
+  });
+
+  serial_no = new FormControl('');
+
+  onSerialNoChange(){
+    alert(this.serial_no.value);
+    console.log(this.serial_no.value);
+  };
+
+  changed = (value) => {
+    alert(value.toString());
+  }
+
+  onSubmit() {
+    alert("hi");
+    // TODO: Use EventEmitter with form value
+    console.warn(this.deficiencyCreateForm.value);
+    this.deficiencyCreateForm.reset();
+  }
+
+  selected(event) {
+    alert(event.value);
+    let target = event.source.selected._element.nativeElement;
+    let selectedData = {
+      value: event.value,
+      text: target.innerText.trim()
+    };
+    alert(selectedData);
+    console.log(selectedData);
+} 
+  title = 'electron-app';
+  foods: Food[] = [
+    {value: 'C-4.5.2 Evaluation of compliance', viewValue: 'C-4.5.2 Evaluation of compliance'},
+    {value: 'C-4.5.4 Control of records', viewValue: 'C-4.5.4 Control of records'},
+    {value: 'C-4.3.3 Objectives, targets and programme(s)', viewValue: 'C-4.3.3 Objectives, targets and programme(s)'}
+  ];
+
+  categories_of_nc: CategoryOfNC[] = [
+    {value: 'D01 Navigation Equipment', viewValue: 'D01 Navigation Equipment'},
+    {value: 'D02 GMDSS Equipment', viewValue: 'D02 GMDSS Equipment'},
+    {value: 'D03 Passage Plan', viewValue: 'D03 Passage Plan'},
+    {value: 'D04 Charts & Publications', viewValue: 'D04 Charts & Publications'},
+    {value: 'D05 Recordkeeping', viewValue: 'D05 Recordkeeping'},
+    {value: 'D06 Procedure', viewValue: 'D06 Procedure'},
+    {value: 'D07 Personal', viewValue: 'D07 Personal'},
+    {value: 'D08 Others', viewValue: 'D08 Others'},
+    {value: 'D09 Nil', viewValue: 'D09 Nil'}
+  ];
+
+  mnc_obs_nc:MncNcObs[]=[
+    {value: 'MNC', viewValue: 'MNC'},
+    {value: 'NC', viewValue: 'NC'},
+    {value: 'OBS', viewValue: 'OBS'}
+  ];
+
+  accept_revised_by_cap:AcceptRevisedByCap[]=[
+    {value:'YES',viewValue:'YES'},
+    {value:'NO',viewValue:'NO'},
+  ];
+
+  root_cause_analysis:RootCauseAnalysis[]=[
+    {value:'YES',viewValue:'YES'},
+    {value:'NO',viewValue:'NO'},
+  ];
+
+  status:Status[]=[
+    {value:'OPEN',viewValue:'OPEN'},
+    {value:'CLOSE',viewValue:'CLOSE'},
+  ];
+
+  causes:Cause[]=[
+    {value:'S1 Maintenance Deficiency',viewValue:'S1 Maintenance Deficiency'},
+    {value:'S2 Improper Handling',viewValue:'S2 Improper Handling'},
+    {value:'S3 Lack of Knowledge',viewValue:'S3 Lack of Knowledge'},
+    {value:'S4 Negligence',viewValue:'S4 Negligence'},
+    {value:'S5 Design Deficient',viewValue:'S5 Design Deficient'},
+    {value:'S6 Material/Process',viewValue:'S6 Material/Process'},
+    {value:'S7 Others',viewValue:'S7 Others'}
+  ];
+  
+  constructor(  
+    private ipc: IpcCal,
+    private ser: AppService,
+    private setData: SetData,
+    private router: Router,) { 
+
+        console.log("inside...");
+      this.ipc.checkVesselAvail().then((value) => {
+        
+        console.log(value)
+        //alert(value);
+        if(value==0){
+          console.log(value==0);
+            this.router.navigate(['/configPage']);
+        }else{
+          console.log(value);
+          console.log(value==0);
+          this.router.navigate(['/login']);
+        }
+      
+  
+      })
+    
+  }
+
+   
+
+  ngOnInit() {
+   
+  }
+
+ 
+}

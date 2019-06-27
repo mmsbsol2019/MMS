@@ -1,0 +1,44 @@
+<nav class="navbar navbar-dark primary-color" style="color:white;font-weight: bold">
+    
+  Vessel Bug Tracking Application
+
+  <ul class="navbar-nav ml-auto nav-flex-icons">
+    <li class="nav-item">
+      <a class="nav-link">
+        <div class="btn-group" mdbDropdown>
+          <mdb-icon fas icon="user" mdbDropdownToggle></mdb-icon>
+          <div class="dropdown-menu dropdown-menu-right dropdown-primary">
+            <a class="dropdown-item" href="#">My Accounts</a>
+            <a class="dropdown-item" href="#">Settings</a>
+            <div class="divider dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Logout</a>
+          </div>
+        </div>
+      </a>
+    </li>
+  </ul>
+
+  {{loggedInUser}}
+</nav>
+<!-- <div class="card head">
+    <div class="card-header">
+    Dashboard
+    </div>
+</div>     -->
+<br>
+<div class="container">
+<div class="card-deck">
+    
+    <div class="card" style="background:none" routerLink="/createDeficiency">
+      <div class="card-body text-center">
+        <p class="card-text" style="font-weight: bold;">CREATE DEFICIENCY <i class="fa fa-plus-square" aria-hidden="true"></i></p>
+      </div>
+    </div>
+    <div class="card" style="" routerLink="/searchDeficiency">
+      <div class="card-body text-center">
+        <p class="card-text" style="font-weight: bold">SEARCH DEFICIENCY  <i class="fa fa-search" aria-hidden="true"></i>
+        </p>
+      </div>
+    </div>  
+  </div>
+</div>

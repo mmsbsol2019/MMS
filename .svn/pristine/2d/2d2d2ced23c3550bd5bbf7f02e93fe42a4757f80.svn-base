@@ -1,0 +1,65 @@
+<!--Main Navigation-->
+<header class="intro-header">
+
+  <!--Navbar-->
+  <mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar" [containerInside]="false">
+    
+      <a class="logo navbar-brand waves-light" mdbWavesEffect href="#"><strong>Vessel Bug Tracking Application </strong></a>
+   
+   
+  </mdb-navbar>
+
+  <!--Intro Section-->
+  <section class="view intro-2">
+    <div class="full-bg-img mask rgba-gradient">
+      <div class="container flex-center">
+        <div class="d-flex align-items-center content-height w-100">
+          <div class="row flex-center pt-5 mt-3 w-100">
+            <div class="col-md-3 text-center text-md-left mb-5">
+              <!--  -->
+            </div>
+
+            <div class="col-md-4 col-xl-5 offset-xl-1">
+              <!--Form-->
+              <div class="card wow fadeInRight" data-wow-delay="0.3s">
+                <div class="card-body">
+                  <!--Header-->
+                  <div class="text-center">
+                    <h3 class="white-text"><i class="fas fa-user white-text"></i> Login</h3>
+                    <hr class="hr-light">
+                  </div>
+
+                  <!--Body-->
+                  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                  <div class="md-form">
+                    <i class="fas fa-user prefix white-text"></i>
+                    <input type="text" id="form3" class="form-control" formControlName="userName" mdbInput required>
+                    <label for="form3">Username</label>
+                  </div>
+              
+                  <div class="md-form">
+                    <i class="fas fa-lock prefix white-text"></i>
+                    <input type="password" id="form4" class="form-control" formControlName="passWord" mdbInput required> 
+                    <label for="form4">Password</label>
+                  </div>
+
+                  <div class="text-center">
+                    <input type="submit" value="Log In"  >
+                  </div>
+                </form>
+                </div>
+              </div>
+            
+              <!--/.Form-->
+            </div>
+            <div class="col-md-4 text-center text-md-left mb-5">
+              <!--  -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</header>
+<!--Main Navigation-->

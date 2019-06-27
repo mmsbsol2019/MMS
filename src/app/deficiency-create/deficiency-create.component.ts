@@ -1,0 +1,686 @@
+import { Component, OnInit,Pipe,ViewChild, ɵConsole  } from '@angular/core';
+import {FormControl,FormGroup, Validators} from '@angular/forms';
+import { LoginService } from "../login.service";
+import { parse } from 'querystring';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { ElectronService } from 'ngx-electron';
+import CONST from 'DBConnection/constants'
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { ModalDirective } from 'angular-bootstrap-md';
+import { IpcCal } from '../ipcCall';
+import { SetData } from '../setData';
+import { ToastrService } from 'ngx-toastr';   
+
+//-----------------------------------For Modal Dropdown------------------------------
+export interface CategoryOfNC {
+  value: string;
+  viewValue: string;
+}
+
+export interface MncNcObs {
+  value: string;
+  viewValue: string;
+}
+export interface CodeRefNC {
+  value: string;
+  viewValue: string;
+}
+
+export interface AcceptRevisedByCap {
+  value: string;
+  viewValue: string;
+}
+
+export interface RootCauseAnalysis {
+  value: string;
+  viewValue: string;
+}
+
+export interface Status {
+  value: string;
+  viewValue: string;
+}
+export interface Cause {
+  value: string;
+  viewValue: string;
+}
+
+//-----------------------------------For Modal Dropdown------------------------------ 
+
+@Component({
+  selector: 'app-deficiency-create',
+  templateUrl: './deficiency-create.component.html',
+  styleUrls: ['./deficiency-create.component.scss']
+})
+export class DeficiencyCreateComponent implements OnInit {
+
+  //---------------Properties start ------------------------
+
+  @ViewChild('auditCategoryModal') auditCategoryModal: ModalDirective;
+
+  loggedInUser:string;
+  loggedInUserId:string;
+  checked = false;
+  step = 0;
+  defStatus:any;
+  createDeficiency:any[];
+  editDeficiency:any=[];
+
+  auditCategory:any;
+  auditCategoryName:any=[];
+  vesselInfo:any;
+  vesselInfo1:any;
+
+
+  category_of_nc_opt:any;
+  code_ref_of_nc_opt:any;
+  mnc_nc_obs_opt:any;
+  accept_revised_cap_by_auditor_opt:any;
+  root_cause_analysis_opt:any
+  cause_opt:any;
+  status_opt:any;
+
+  serialNo:any;
+  flag:any;
+
+  deficiencyData:any=[];
+  nestedArray=[];
+  editIndex:any;
+  defHstryData:any;
+  def_status:any;
+
+  auditInfoSaveBtn:boolean=true;
+  deficiencyFlag:boolean=false;
+
+  selectedAuditCategoryValue:string;
+
+  setAuditType:any;
+  setAuditTypeArray:any=[];
+
+  setAuditInterval:any;
+  setAuditIntervalArray:any=[];
+
+  setAuditOrg:any;
+  setAuditOrgArray:any=[];
+
+  setCause:any;
+  setCauseArray:any=[];
+
+  setCatOfNc:any;
+  setCatOfNcArray:any=[];
+
+  setCodeRefValue:any;
+  setCodeRefValueArray:any=[];
+
+  compyId:number;
+  vslName:any;
+  vslCode:any;
+  vslImoNo:any;
+  vslOffNo:any;
+  auditCatId:number;
+  auditIntervalId:number;
+  auditTypeId:number;
+  auditTrackingId:any;
+  auditorName:any;
+  auditDate:any;
+  auditOrg:any;
+  auditPort:any;
+  
+  public personCheckedIndex = -1;
+  defId: any;
+  codeValue: any;
+  codeRefValue: any;
+  causeValue: any;
+  auditTrackNoWithoutInt: string;
+  
+//---------------Properties start ------------------------
+
+ 
+
+  personCheckboxChange(event: MatCheckboxChange, index: number) {
+  
+    this.personCheckedIndex = event.checked ? index : -1;
+    if(this.personCheckedIndex==index){
+      this.flag=true;
+      console.log( this.flag)
+    }
+    else{
+      this.flag=false;
+      console.log( this.flag)
+    }
+    
+}
+
+
+RowSelected(def:any,index:any)
+{
+  this.defId=def.DEFICIENCY_ID;
+  console.log(def);   
+  //this.editIndex=index; 
+  this.editDeficiency=def;
+ // this.editDeficiency.CODE_ID="asdf";
+  //this.editDeficiency.CODE_REF_ID="asdf";
+  console.log(this.editDeficiency.CAUSE_ID);
+  console.log(this.editDeficiency.CODE_ID);
+  console.log(this.editDeficiency.CODE_REF_ID);
+
+  console.log(this.setCatOfNcArray);
+  //this.editDeficiency.CODE_ID=this.gettingCodeName(def.CODE_ID);  
+ }
+  
+  deficiencyCreateForm = new FormGroup({
+    serial_no: new FormControl(''),
+    details_of_nc: new FormControl(''),
+    corrective_action_plan: new FormControl(''),
+    accept_cap_by_auditor: new FormControl(''),
+    comments_by_auditor: new FormControl(''),
+    ship_revised_by_cap: new FormControl(''),
+    preventive_action: new FormControl(''),
+    remarks: new FormControl(''), 
+    error_check: new FormControl(''),
+    name_of_auditor: new FormControl(''),
+    target_date:new FormControl(''),
+    close_date:new FormControl(''),
+    audit_date:new FormControl(''),
+    category:new FormControl(''),
+    codeRef:new FormControl(''),
+    mnc_nc_obs:new FormControl(''),
+    accept_revised_cap_by_auditor:new FormControl(''),
+    root_cause_analysis:new FormControl(''),
+    cause:new FormControl(''),
+    status:new FormControl(''),
+    isChecked:new FormControl('')
+  });
+
+
+
+
+  deficiencyEditForm = new FormGroup({
+    serial_no: new FormControl(''),
+    details_of_nc: new FormControl(''),
+    corrective_action_plan: new FormControl(''),
+    accept_cap_by_auditor: new FormControl(''),
+    comments_by_auditor: new FormControl(''),
+    ship_revised_by_cap: new FormControl(''),
+    preventive_action: new FormControl(''),
+    remarks: new FormControl(''), 
+    error_check: new FormControl(''),
+    name_of_auditor: new FormControl(''),
+    target_date:new FormControl(''),
+    close_date:new FormControl(''),
+    audit_date:new FormControl(''),
+    category:new FormControl(''),
+   codeRef:new FormControl(''),
+    mnc_nc_obs:new FormControl(''),
+    accept_revised_cap_by_auditor:new FormControl(''),
+    root_cause_analysis:new FormControl(''),
+    cause:new FormControl(''),
+    status:new FormControl(''),
+    
+  });
+
+  vesselInfoForm = new FormGroup({    
+    vessel_name:new FormControl(''),
+    imo_no:new FormControl(''),
+    vessel_code:new FormControl(''),
+    official_no:new FormControl(''),
+  });
+
+  auditInfoForm = new FormGroup({    
+    auditCategoryInput:new FormControl('', Validators.required,),  
+    auditDate:new FormControl('', Validators.required,) ,
+    auditType:new FormControl('', Validators.required,),
+    auditInterval:new FormControl('', Validators.required,),
+    auditTrackingNumber:new FormControl('', Validators.required,) ,
+    auditorName:new FormControl('', Validators.required,),
+    auditOrganisation:new FormControl('', Validators.required,),
+    auditPort:new FormControl('', Validators.required,)    
+  });
+
+  
+  onSubmit() {
+
+    console.log(this.deficiencyCreateForm.value);
+   
+    // console.log("CauseId===>"+ this.gettingCauseId(this.deficiencyCreateForm.value.cause));
+    // console.log("COdeRefId==>"+this.gettingCodeRefId(this.deficiencyCreateForm.value.code_ref_of_nc));
+    // console.log("CodeId"+this.gettingCodeId(this.deficiencyCreateForm.value.category_of_nc));
+    let causeId= this.gettingCauseId(this.deficiencyCreateForm.value.cause);
+    let codeRefId=this.gettingCodeRefId(this.deficiencyCreateForm.value.codeRef);
+    let codeId=this.gettingCodeId(this.deficiencyCreateForm.value.category);
+
+    console.log(causeId,codeRefId,codeId);
+    console.log(this.compyId,this.auditCatId,this.auditTypeId,this.auditIntervalId);
+
+    var cmnyCatInterId=[this.compyId,this.auditCatId,this.auditTypeId,this.auditIntervalId];
+    var commonData=[this.compyId,this.vslName,this.vslCode,
+      this.vslImoNo,this.vslOffNo,this.auditCatId,
+      this.auditIntervalId,this.auditTypeId,this.auditTrackingId,
+      this.auditorName,this.auditDate,this.auditOrg,
+      this.auditPort,this.loggedInUserId];
+
+      var defCommonData=[causeId,codeRefId,codeId];
+      console.log(this.deficiencyCreateForm.value)
+      this.ipc.OnGetseq(cmnyCatInterId).then((seqNo)=>{
+        console.log(seqNo)
+      this.setData.onSetDefCreate(this.deficiencyCreateForm.value,commonData,defCommonData,seqNo).then((allSetData)=>{
+      console.log(allSetData)
+    
+   // var findData=[1,1,1,1];
+ 
+  
+      this.ipc.onCreateNewDef(allSetData,cmnyCatInterId).then((value) =>{
+        console.log(value)
+        this.deficiencyData= value;  
+       // this.deficiencyData.CAUSE_ID=this.deficiencyCreateForm.value.cause;
+       // console.log(this.deficiencyData);
+        this.deficiencyCreateForm.reset();
+      })
+    })
+    })            
+  }
+
+  onOpenCreateModel(){
+    console.log(this.auditTrackingId);
+    this.deficiencyCreateForm.get('serial_no').setValue(this.auditTrackNoWithoutInt);
+ 
+//  var param=[this.compyId];
+//      var paramAuditCode=[this.compyId,this.auditCatId];
+//     this.ipc.onCreateModelWin(param,paramAuditCode).then((value) =>{   
+  
+    // this.setCatOfNc=this.codeValue;
+
+    // for(let i=0;i<this.setCatOfNc.length;i++){
+    //   this.setCatOfNcArray.push(this.setCatOfNc[i].CODE_NAME);
+    //  }
+
+    //  this.setCodeRefValue= this.codeRefValue;
+    //  for(let i=0;i<this.setCodeRefValue.length;i++){
+    //    this.setCodeRefValueArray.push(this.setCodeRefValue[i].CODE_REF_VAL);
+    //   }
+
+    //   this.setCause=this.causeValue;
+    //   for(let i=0;i<this.setCause.length;i++){
+    //     this.setCauseArray.push(this.setCause[i].CAUSE_VAL);
+    //    }
+
+      //  console.log(this.setCatOfNcArray);
+      //  console.log(this.setCodeRefValueArray);
+      //  console.log(this.setCauseArray);
+
+    
+   // })
+  }
+
+  onSubmitEdit() {
+    this.flag=false;
+    this.personCheckedIndex=-1;
+
+    var cmnyCatInterId=[this.compyId,this.auditCatId,this.auditTypeId,this.auditIntervalId];
+    var param=[this.compyId,this.auditCatId,this.auditTypeId,this.auditIntervalId,this.deficiencyEditForm.value.serial_no];
+    var commonData=[this.compyId,this.vslName,this.vslCode,
+      this.vslImoNo,this.vslOffNo,this.auditCatId,
+      this.auditIntervalId,this.auditTypeId,this.auditTrackingId,
+      this.auditorName,this.auditDate,this.auditOrg,
+      this.auditPort];
+   
+    this.ipc.getTxnNumber(param).then((value) =>{
+      console.log('tnx value')
+      console.log(value)
+    this.setData.onSetDefEdit(this.deficiencyEditForm.value,commonData,value).then((value)=>{
+      console.log(value)
+    
+   // var findData=[1,1,1,1];
+
+      this.ipc.onEditDef(value,cmnyCatInterId).then((value) =>{
+
+        this.deficiencyData= value;
+   
+      })
+    })
+  })
+    
+  }
+
+  set(){
+   // alert("hi");
+    console.log(this.selectedAuditCategoryValue);
+    this.auditInfoForm.get('auditCategoryInput').setValue(this.selectedAuditCategoryValue);
+    console.log(this.vesselInfo[0].VESSEL_CODE+"-"+this.selectedAuditCategoryValue);
+    let defaultAuditTrackingNo;
+    defaultAuditTrackingNo=this.vesselInfo[0].VESSEL_CODE+"-"+this.selectedAuditCategoryValue;
+    this.auditInfoForm.get('auditTrackingNumber').setValue(defaultAuditTrackingNo);
+  }
+
+   onAuditInfoSubmit(){
+    this.step=1;
+
+    this.compyId=this.vesselInfo[0].COMPANY_ID;
+    this.vslCode=this.vesselInfo[0].VESSEL_CODE;
+    this.vslImoNo=this.vesselInfo[0].IMO_NUMBER;
+    this.vslOffNo=this.vesselInfo[0].OFFICIAL_NUMBER;
+    this.vslName=this.vesselInfo[0].VESSEL_NAME;
+    this.auditCatId=this.gettingAuditCatId(this.selectedAuditCategoryValue);
+    this.auditIntervalId=this.gettingAuditIntervalId(this.auditInfoForm.value.auditInterval);
+    this.auditTypeId=this.gettingAuditTypeId(this.auditInfoForm.value.auditType);
+    this.auditOrg=this.auditInfoForm.value.auditOrganisation;
+    this.auditDate=this.auditInfoForm.value.auditDate;
+    this.auditPort=this.auditInfoForm.value.auditPort;
+    this.auditorName=this.auditInfoForm.value.auditorName;
+
+    var param=[this.compyId];
+    var paramAuditCode=[this.compyId,this.auditCatId];
+    this.ipc.onCreateModelWin(param,paramAuditCode).then((value) =>{  
+      console.log(value[0])
+      this.codeValue=value[0];
+      for(let i=0;i<this.codeValue.length;i++){
+        this.setCatOfNcArray.push(this.codeValue[i].CODE_NAME);
+       }
+      this.codeRefValue=value[1];
+      for(let i=0;i<this.codeRefValue.length;i++){
+        this.setCodeRefValueArray.push(this.codeRefValue[i].CODE_REF_VAL);
+       }
+      this.causeValue=value[2];
+      for(let i=0;i<this.causeValue.length;i++){
+        this.setCauseArray.push(this.causeValue[i].CAUSE_VAL);
+       }
+       console.log(this.setCatOfNcArray);
+        console.log(this.setCodeRefValueArray);
+        console.log(this.setCauseArray);
+
+    })
+   
+
+    // console.log(this.auditCategory);
+    // console.log(this.vesselInfo[2]);
+    // console.log(this.vesselInfo[3]);
+    // console.log(this.compyId,this.auditCatId,this.auditIntervalId,this.auditTypeId);
+    // console.log("vslcode===>"+ this.vslCode);
+    // console.log("vslImoNo===>"+this.vslImoNo);
+    // console.log("vslOffNo===>"+this.vslOffNo);
+    // console.log("vslName===>"+this.vslName);
+    // console.log("auditOrg===>"+this.auditOrg);
+    // console.log("auditDate===>"+this.auditDate);
+    // console.log ("auditPort===>"+this.auditPort);
+    // console.log("auditorName===>"+this.auditorName);
+   
+   // var param=[1,1,1,1];
+     var param=[this.compyId,this.auditCatId,this.auditTypeId,this.auditIntervalId];
+     console.log('ssss')
+     this.ipc.onSaveAuditInfo(param).then((value)=>{
+      this.deficiencyData= value;
+     console.log(this.deficiencyData);
+   });
+   
+    if(this.auditInfoForm.valid){
+      this.toastr.success("Data retrived for "+this.selectedAuditCategoryValue);
+      this.auditInfoSaveBtn=false;
+      this.deficiencyFlag=true;
+      let m,y,auditType,auditInt,vesselCode,auditCat;
+      m=this.auditInfoForm.value.auditDate.getMonth()+1;
+      y=this.auditInfoForm.value.auditDate.getFullYear();
+      if(this.auditInfoForm.value.auditType=="DA INTERNAL"){
+        auditType="INT"
+      }
+      else{
+        auditType="EXT"
+      }
+
+      if(this.auditInfoForm.value.auditInterval=="DAA MONTHLY"){
+        auditInt="MON"
+      }
+      else if(this.auditInfoForm.value.auditInterval=="DAB QUARTERLY"){
+          auditInt="QUA"
+      }
+      else{
+        auditInt="OTH"
+      }
+
+      console.log("AuditINterval"+auditInt);
+      vesselCode=this.vesselInfo[0].VESSEL_CODE;
+      auditCat=this.selectedAuditCategoryValue;
+      //console.log(vesselCode+"-"+m+"-"+y+"-"+auditCat+"-"+auditType);
+      let auditTrackNo=vesselCode+"-"+m+"-"+y+"-"+auditCat+"-"+auditType+"-"+auditInt;
+      let auditTrackNoWithoutInt=vesselCode+"-"+m+"-"+y+"-"+auditCat+"-"+auditType;
+      this.auditInfoForm.get('auditTrackingNumber').setValue(auditTrackNo);
+      this.auditTrackingId=auditTrackNo;
+      this.auditTrackNoWithoutInt=auditTrackNoWithoutInt;
+      console.log("tracking no===>"+this.auditTrackingId);
+       console.warn(this.auditInfoForm.value);
+      // console.warn(this.auditInfoForm.value.auditDate.getFullYear());
+      // console.warn(this.auditInfoForm.value.auditDate.getMonth()+1);     
+    }
+    else{
+        this.toastr.warning("All fields are mandatory");
+    }
+   
+  }
+
+  gettingAuditCatId(auditCat:any){
+
+      let a=this.auditCategory.filter(i=>i.CATEGORY_NAME==auditCat);
+      return a[0].CATEGORY_ID;
+
+  }
+
+  gettingAuditIntervalId(auditInt:any){
+
+     let a=this.vesselInfo[3].filter(i=>i.INTERVAL_NAME==auditInt);
+
+     return a[0].INTERVAL_ID;
+
+ }
+
+
+ gettingAuditTypeId(auditTyp:any){
+
+   let a=this.vesselInfo[2].filter(i=>i.AUDIT_TYPE==auditTyp);
+
+   return a[0].TYPE_ID;
+
+}
+
+gettingCodeId(codeName:any){
+ let a=this.codeValue.filter(i=>i.CODE_NAME==codeName);
+  return a[0].CODE_ID;
+}
+
+gettingCodeName(codeId:any){
+    console.log(this.codeValue);
+    console.log(codeId)
+  let a=this.codeValue.filter(i=>i.CODE_ID==codeId);
+   return a[0].CODE_NAME;
+ }
+
+gettingCodeRefId(codeRefVal:any){
+let a=this.codeRefValue.filter(i=>i.CODE_REF_VAL==codeRefVal); 
+  return a[0].CODE_REF_ID;
+}
+
+gettingCauseId(causeVal:any){
+ 
+   let a=this.causeValue.filter(i=>i.CAUSE_VAL==causeVal);   
+   return a[0].CAUSE_ID;
+}
+
+  switchStatus(){    
+    return this.def_status;
+  }
+
+  defStat(stat){
+    let openCOlor=document.getElementById('btnOpen');
+    let closeColor=document.getElementById('btnClose');
+    let allColor=document.getElementById('btnAll');
+    if(stat==="OPEN")    {      
+      openCOlor.style.color='red';
+      closeColor.style.color='black';
+      allColor.style.color='black';
+    }
+    else if(stat==="CLOSE"){
+     
+      openCOlor.style.color='black';
+      closeColor.style.color='red';
+      allColor.style.color='black';;
+    }
+    else{
+      
+      openCOlor.style.color='black';
+      closeColor.style.color='black';
+      allColor.style.color='red';
+    } 
+   
+    this.def_status=stat;
+  }
+ 
+  onDefHstry(){   
+    console.log(this.defId);
+    let deficiencyId=this.defId;
+    let param=[this.compyId,deficiencyId]
+    this.ipc.onGetHistory(param).then((value)=>{
+     console.log(value)
+      this.defHstryData=value;    
+
+    })
+    
+  }
+
+  delete(){
+    console.log( this.flag);
+    console.log(this.personCheckedIndex);
+   this.flag=false;
+   this.personCheckedIndex=-1;
+    var param=[this.compyId,this.defId]
+    var cmnyCatInterId=[this.compyId,this.auditCatId,this.auditTypeId,this.auditIntervalId];
+    var newData=[this.compyId,this.auditTrackingId,this.auditTrackingId];
+    this.ipc.onDeleteDef(param,cmnyCatInterId,newData).then((value)=>{
+      console.log( this.flag);
+      console.log(this.personCheckedIndex);
+      this.deficiencyData= value;
+
+    })
+  }
+
+  // coderef_of_nc: CodeRefNC[] = [
+  //   {value: 'C-4.5.2 Evaluation of compliance', viewValue: 'C-4.5.2 Evaluation of compliance'},
+  //   {value: 'C-4.5.4 Control of records', viewValue: 'C-4.5.4 Control of records'},
+  //   {value: 'C-4.3.3 Objectives, targets and programme(s)', viewValue: 'C-4.3.3 Objectives, targets and programme(s)'}
+  // ];
+
+  // categories_of_nc: CategoryOfNC[] = [
+  //   {value: 'D01 Navigation Equipment', viewValue: 'D01 Navigation Equipment'},
+  //   {value: 'D02 GMDSS Equipment', viewValue: 'D02 GMDSS Equipment'},
+  //   {value: 'D03 Passage Plan', viewValue: 'D03 Passage Plan'},
+  //   {value: 'D04 Charts & Publications', viewValue: 'D04 Charts & Publications'},
+  //   {value: 'D05 Recordkeeping', viewValue: 'D05 Recordkeeping'},
+  //   {value: 'D06 Procedure', viewValue: 'D06 Procedure'},
+  //   {value: 'D07 Personal', viewValue: 'D07 Personal'},
+  //   {value: 'D08 Others', viewValue: 'D08 Others'},
+  //   {value: 'D09 Nil', viewValue: 'D09 Nil'}
+  // ];
+
+  mnc_obs_nc:MncNcObs[]=[
+    {value: 'MNC', viewValue: 'MNC'},
+    {value: 'NC', viewValue: 'NC'},
+    {value: 'OBS', viewValue: 'OBS'}
+  ];
+
+  accept_revised_by_cap:AcceptRevisedByCap[]=[
+    {value:'YES',viewValue:'YES'},
+    {value:'NO',viewValue:'NO'},
+  ];
+
+  root_cause_analysis:RootCauseAnalysis[]=[
+    {value:'YES',viewValue:'YES'},
+    {value:'NO',viewValue:'NO'},
+  ];
+
+  status:Status[]=[
+    {value:'OPEN',viewValue:'OPEN'},
+    {value:'CLOSE',viewValue:'CLOSE'},
+  ];
+
+  // causes:Cause[]=[
+  //   {value:'S1 Maintenance Deficiency',viewValue:'S1 Maintenance Deficiency'},
+  //   {value:'S2 Improper Handling',viewValue:'S2 Improper Handling'},
+  //   {value:'S3 Lack of Knowledge',viewValue:'S3 Lack of Knowledge'},
+  //   {value:'S4 Negligence',viewValue:'S4 Negligence'},
+  //   {value:'S5 Design Deficient',viewValue:'S5 Design Deficient'},
+  //   {value:'S6 Material/Process',viewValue:'S6 Material/Process'},
+  //   {value:'S7 Others',viewValue:'S7 Others'}
+  // ];
+  //-------------constructor-------------------
+  constructor(private login: LoginService,  private ipc: IpcCal,
+          private setData : SetData ,private toastr: ToastrService    ) {
+  // let param=[1,'SPA'];
+  // ipc.onRetrieveVesselAccessUsers(param)
+
+
+    }
+
+    //-------------constructor-------------------
+
+
+    //-------------ngOnInit-------------------
+
+  ngOnInit() {
+   var param =[1];
+   var vesData=[1,"SPA"];
+   this.ipc.onLoadCreateDefAuditCat(param).then((value)=>{
+     // console.log(value)
+      this.auditCategory= value;
+     // console.log(this.auditCategory)
+      for(let i=0;i<this.auditCategory.length;i++){
+      //  console.log(this.auditCategory[i].CATEGORY_NAME);
+        this.auditCategoryName.push(this.auditCategory[i].CATEGORY_NAME);
+    }
+  //  console.log(this.auditCategoryName);
+     });
+    
+    
+    this.ipc.onLoadCreateDefVesselInfo(param,vesData).then((value)=>{
+      this.vesselInfo= value;
+    
+      //------------VESSEL DATA [1]-------------------
+      this.setAuditOrg=this.vesselInfo[1][0].COMPANY_NAME;
+     // console.log(this.setAuditOrg);
+      this.auditInfoForm.get('auditOrganisation').setValue(this.setAuditOrg);
+      this.auditInfoForm.get('auditPort').setValue("PORT OF NEW YORK");
+      this.auditInfoForm.get('auditorName').setValue(this.loggedInUser);
+
+     
+     // console.log(this.vesselInfo[0].VESSEL_NAME+"-")
+      //------------AUDIT TYPE DATA [2]-------------------
+      this.setAuditType=this.vesselInfo[2];
+      for(let i=0;i<this.setAuditType.length;i++){
+       this.setAuditTypeArray.push(this.setAuditType[i].AUDIT_TYPE);
+      }
+       //------------AUDIT INTERVAL DATA [3]-------------------
+      this.setAuditInterval=this.vesselInfo[3];
+      for(let i=0;i<this.setAuditInterval.length;i++){
+        this.setAuditIntervalArray.push(this.setAuditInterval[i].INTERVAL_NAME);
+       }
+          
+  this.vesselInfoForm.get('imo_no').setValue(this.vesselInfo[0].IMO_NUMBER);
+  this.vesselInfoForm.get('vessel_name').setValue(this.vesselInfo[0].VESSEL_NAME);
+  this.vesselInfoForm.get('vessel_code').setValue(this.vesselInfo[0].VESSEL_CODE);
+  this.vesselInfoForm.get('official_no').setValue(this.vesselInfo[0].OFFICIAL_NUMBER); 
+       });;
+      
+  
+   // this.defStatus="CLOSE";
+    this.def_status="OPEN";
+   //this.flag=true;
+    this.login.currentUser.subscribe(loggedInUser => this.loggedInUser = loggedInUser);
+    this.login.currentUserId.subscribe(loggedInUserId => this.loggedInUserId = loggedInUserId);
+    console.log(this.loggedInUser)
+    console.log(this.loggedInUserId)
+  
+      
+  }
+//-------------ngOnInIt-------------------
+ ngAfterViewInit() {    
+    this.auditCategoryModal.show();
+   // console.log(this.selectedAuditCategoryValue);
+  }
+
+}

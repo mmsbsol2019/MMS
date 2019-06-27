@@ -1,0 +1,16 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+@Injectable({
+  providedIn: 'root'
+})
+export class LoginService {
+
+  private loggedInSource = new BehaviorSubject('');
+  currentUser = this.loggedInSource.asObservable();
+
+  constructor() { }
+
+  loggedInUser(loggedInUser: string) {
+    this.loggedInSource.next(loggedInUser)
+  }
+}

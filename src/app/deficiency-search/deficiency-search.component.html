@@ -1,0 +1,122 @@
+<nav class="navbar navbar-dark primary-color" style="color:white;font-weight: bold">
+    
+  Vessel Bug Tracking Application
+
+  <ul class="navbar-nav ml-auto nav-flex-icons">
+    <li class="nav-item">
+      <a class="nav-link">
+        <div class="btn-group" mdbDropdown>
+          <mdb-icon fas icon="user" mdbDropdownToggle></mdb-icon>
+          <div class="dropdown-menu dropdown-menu-right dropdown-primary">
+            <a class="dropdown-item" routerLink="/login">My Accounts</a>
+            <a class="dropdown-item" routerLink="/login">Settings</a>
+            <div class="divider dropdown-divider"></div>
+            <a class="dropdown-item" routerLink="/login">Logout</a>
+          </div>
+        </div>
+      </a>
+    </li>
+  </ul>
+  <button routerLink="/dashboard" class="btn btn-info btn-sm" style="color:aliceblue">Dashboard</button>
+  <form class="form-inline waves-light" mdbWavesEffect>
+    <div class="md-form my-0">
+     
+    </div>
+  </form>
+
+
+</nav>
+  <!-- <hr class="style11"> -->
+  <div class="card">
+    <div class="card-header">
+    Deficiency Search
+    </div>
+    <div class="card-body">
+      <form>
+        <div class="form-row">
+          <div class="col">
+              <form class="example-form">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Vessel Name" value="">
+                  </mat-form-field>
+              </form>   
+          </div>
+
+          <div class="col">
+              <form class="example-form">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Vessel Code" value="">
+                  </mat-form-field>
+              </form>
+          </div>      
+          <div class="col">
+              <form class="example-form">
+                  <mat-form-field class="example-full-width">
+                    <input matInput placeholder="Category" value="">
+                  </mat-form-field>
+              </form>
+            </div>
+            <div class="col">
+                <mat-form-field>
+                    <mat-label>Status</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let status of status" [value]="status.value">
+                        {{status.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+              </div>  
+
+        </div>
+
+        <br>
+        <div class="form-row">
+          <div class="col">            
+              <mat-form-field>
+                  <input matInput [matDatepicker]="startDatePicker" placeholder="Start Date">
+                  <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #startDatePicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+         
+         
+          <div class="col">
+              <mat-form-field>
+                  <input matInput [matDatepicker]="endDatePicker" placeholder="End Date">
+                  <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #endDatePicker></mat-datepicker>
+                </mat-form-field>
+          </div>
+          <div class="col">
+              <mat-form-field>
+                  <input matInput [matDatepicker]="auditDatePicker" placeholder="Audit Date">
+                  <mat-datepicker-toggle matSuffix [for]="auditDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #auditDatePicker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div class="col">
+                <mat-form-field>
+                    <mat-label>Deficiency Category</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let cat of defCategory" [value]="cat.value">
+                        {{cat.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+              </div>             
+        </div> 
+       
+        
+          <div class="center">
+              <button type="button" class="btn btn-outline-primary btn-sm">Search</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm">Clear</button>
+          </div>
+          <!-- <div class="col">
+              <button type="button" class="btn btn-outline-secondary btn-sm">Clear</button>
+          </div> -->
+                 
+      </form>  
+    </div>
+  </div>
+
+ 

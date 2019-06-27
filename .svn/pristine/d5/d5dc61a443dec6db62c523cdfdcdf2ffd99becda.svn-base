@@ -1,0 +1,57 @@
+const dbCon = require('./dbConnect')
+const ipcMain = require('electron').ipcMain
+const Constants = require('../DBConnection/constants')
+
+
+ipcMain.on('check-username-password-request', (event, uname_pass) => {
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_LOGIN_USER, uname_pass)
+    .then((value) => {
+      event.sender.send('check-username-password-response', value)
+    }).then(() => {
+      dbCon.closeConnection();
+    })
+
+})
+
+ipcMain.on('get-audit-category-request', (event) => {
+
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_AUDIT_CATEGORY)
+    .then((value) => {
+      event.sender.send('get-audit-category-response', value)
+    }).then(() => {
+      dbCon.closeConnection();
+    })
+
+})
+
+ipcMain.on('find-vessel-info-request', (event, companyId) => {
+  var dataS;
+  dbCon.createConnection();
+  dbCon.executeQuery(Constants.FIND_VESSEL_DETAILS, companyId)
+    .then((value) => {
+      dataS = value;
+
+    }).then(() => {
+      dbCon.closeConnection();
+    }).then(() => {
+      dbCon.createConnection();
+      dbCon.executeQuery(Constants.FIND_AUDIT_TYPE)
+        .then((value) => {
+          dataS.push(value)
+        }).then(() => {
+          dbCon.closeConnection();
+        })
+    }).then(() => {
+      dbCon.createConnection();
+      dbCon.executeQuery(Constants.FIND_AUDIT_INTERVAL)
+        .then((value) => {
+          dataS.push(value)
+          event.sender.send('find-vessel-info-response', dataS)
+        }).then(() => {
+          dbCon.closeConnection();
+        })
+    })
+
+})

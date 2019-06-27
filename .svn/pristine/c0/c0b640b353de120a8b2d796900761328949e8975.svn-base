@@ -1,0 +1,19 @@
+var mysql = require('mysql');
+var pool = mysql.createPool({
+    connectionLimit: 10,
+    host: '192.168.1.80',
+    user: 'mms',
+    password: 'Bsol@123',
+    database: 'mms_db'
+});
+
+exports.getConnection = () => {
+    return new Promise(resolve => {
+        pool.getConnection(function (err, connection) {
+            if (err) throw err; // not connected!
+
+            resolve(connection);
+
+        });
+    })
+}

@@ -1,0 +1,970 @@
+<div class="main">
+    <!-- Start Delete Modal  -->
+    
+      <div mdbModal #frameDelete="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-notify modal-info" role="document">
+          <!--Content-->
+          <div class="modal-content text-center">
+            <!--Header-->
+            <div class="modal-header d-flex justify-content-center">
+              <p class="heading">Deficiency</p>
+            </div>
+    
+            <!--Body-->
+            <div class="modal-body">
+              <i class="fas fa-times fa-4x animated rotateIn"></i>
+            </div>
+    
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+              <a href="#" mdbBtn color="info" outline="true" class="waves-effect" mdbWavesEffect>Yes</a>
+              <a type="button" mdbBtn color="info" class="waves-effect" mdbWavesEffect data-dismiss="modal"
+                (click)="frame.hide()">No</a>
+            </div>
+          </div>
+          <!--/.Content-->
+        </div>
+      </div>
+      <!-- end Delete Modal  -->
+
+      <!-- start audit category select Modal  -->
+      <div mdbModal #auditCategoryModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close pull-right" aria-label="Close" (click)="auditCategoryModal.hide()">
+                <span aria-hidden="true">×</span>
+              </button>
+              <h4 class="modal-title w-100" id="myModalLabel">Select Audit Category</h4>
+            </div>
+            <div class="modal-body">
+              <mat-radio-group
+              aria-labelledby="example-radio-group-label"
+              class="example-radio-group"
+              [(ngModel)]="selectedAuditCategoryValue">
+              <mat-radio-button class="example-radio-button" *ngFor="let auditCat of auditCategoryName" [value]="auditCat">
+                {{auditCat}}
+              </mat-radio-button>
+              </mat-radio-group>
+              <p>{{selectedAuditCategoryValue}}</p>
+            </div>
+            <div class="center">
+              <button class="btn-primary btn-sm mb-3 auditSelectBtn" (click)="auditCategoryModal.hide();set()">Select</button>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+       <!-- end audit category select Modal  -->
+
+
+
+
+    
+      <!-- Navbar -->
+      <nav class="navbar navbar-dark primary-color" style="color:white;font-weight: bold">
+    
+        Vessel Bug Tracking Application
+    
+        <ul class="navbar-nav ml-auto nav-flex-icons">
+          <li class="nav-item">
+            <a class="nav-link">
+              <div class="btn-group" mdbDropdown>
+                <mdb-icon fas icon="user" mdbDropdownToggle></mdb-icon>
+                <div class="dropdown-menu dropdown-menu-right dropdown-primary">
+                  <a class="dropdown-item" href="#">My Accounts</a>
+                  <a class="dropdown-item" href="#">Settings</a>
+                  <div class="divider dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Logout</a>
+                </div>
+              </div>
+            </a>
+          </li>
+        </ul>
+     
+        {{loggedInUser}}
+        <button routerLink="/dashboard" class="btn btn-info btn-sm" style="color:aliceblue">Dashboard</button>
+        <form class="form-inline waves-light" mdbWavesEffect>
+          <div class="md-form my-0">
+           
+          </div>
+        </form>
+    
+    
+      </nav>
+      <!-- Navbar -->
+    
+    
+    
+      <mat-accordion>
+          <mat-expansion-panel [expanded]="step === 0" >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+               Vessel Information
+              </mat-panel-title>             
+            </mat-expansion-panel-header>
+            
+            <form [formGroup]="vesselInfoForm">
+                <div class="form-row">
+                  <div class="col">
+                    <label class="sr-only" for="inlineFormInputGroupUsername2">VesselName</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-ship"></i></div>
+                      </div>
+                      <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2" 
+                      placeholder="VesselName" formControlName="vessel_name" readonly>
+                    </div>
+                  </div>
+       
+                  <div class="col">
+                    <label class="sr-only" for="inlineFormInputGroupUsername2">IMO Number</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="far fa-id-card"></i></div>
+                      </div>
+                      <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2" 
+                      placeholder="IMO Number" formControlName="imo_no" readonly>
+                    </div>
+                  </div>
+        
+                  <div class="col">
+                    <label class="sr-only" for="inlineFormInputGroupUsername2">Vessel Code</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-id-card-alt"></i></div>
+                      </div>
+                      <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2" 
+                      placeholder="Vessel Code" formControlName="vessel_code" readonly>
+                    </div>
+                  </div>
+        
+                  <div class="col">
+                    <label class="sr-only" for="inlineFormInputGroupUsername2">Official Number</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="far fa-address-card"></i></div>
+                      </div>
+                      <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2"
+                        placeholder="Official Number" formControlName="official_no" readonly>
+                    </div>
+                  </div>
+                </div>
+        
+        
+              </form>
+          
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Audit Information
+                </mat-panel-title>
+               
+              </mat-expansion-panel-header>
+              <div class="card-body">
+                  <form [formGroup]="auditInfoForm" (ngSubmit)="onAuditInfoSubmit()">
+                    <div class="form-row">
+                      <div class="col">
+                        <label class="sr-only" for="inlineFormInputGroupUsername2">Audit Category</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-sitemap"></i></div>
+                          </div>
+                          <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2"
+                            placeholder="Audit Category" formControlName="auditCategoryInput" readonly>
+                        </div>
+                      </div>                          
+            
+                      <div class="col">
+                        
+                        <mat-form-field>
+                            <mat-select placeholder="Audit Type" formControlName="auditType">
+                                <mat-option *ngFor="let type of setAuditTypeArray" [value]="type">
+                                  {{type}}
+                                </mat-option>
+                            </mat-select>
+                      </mat-form-field>
+                      </div>
+
+                      <div class="col">
+                          <mat-form-field>
+                              <mat-select placeholder="Audit Interval" formControlName="auditInterval">
+                                  <mat-option *ngFor="let interval of setAuditIntervalArray" [value]="interval">
+                                    {{interval}}
+                                  </mat-option>
+                              </mat-select>
+                        </mat-form-field>
+                      </div>
+                      
+                       <div class="col">
+                          <mat-form-field>
+                              <input matInput [matDatepicker]="auditDatePicker" formControlName="auditDate" placeholder="Audit Date">
+                              <mat-datepicker-toggle matSuffix [for]="auditDatePicker"></mat-datepicker-toggle>
+                              <mat-datepicker #auditDatePicker></mat-datepicker>
+                            </mat-form-field>
+                      </div>
+            
+                     
+            
+                    </div>
+            
+                    <br>
+                    <div class="form-row">
+                      <div class="col">
+                        <label class="sr-only" for="inlineFormInputGroupUsername2">Audit Tracking No</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-list-ol"></i></div>
+                          </div>
+                          <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2"
+                            placeholder="Audit Tracking No" formControlName="auditTrackingNumber">
+                        </div>
+                      </div>
+                      
+
+                      <div class="col">
+                          <label class="sr-only" for="inlineFormInputGroupUsername2">Auditor's Name</label>
+                          <div class="input-group mb-2 mr-sm-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text"><i class="fas fa-user-tie"></i></div>
+                            </div>
+                            <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2"
+                              placeholder="Auditor's Name" formControlName="auditorName">
+                          </div>
+                        </div>
+
+                     
+                      <div class="col">
+                        <label class="sr-only" for="inlineFormInputGroupUsername2">Organization</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-globe"></i></div>
+                          </div>
+                          <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2"
+                            placeholder="Organization" formControlName="auditOrganisation" >
+                        </div>
+                      </div>
+            
+                      <div class="col">
+                        <label class="sr-only" for="inlineFormInputGroupUsername2">Port of Audit
+                        </label>
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-anchor"></i></div>
+                          </div>
+                          <input type="text" class="form-control py-0" id="inlineFormInputGroupUsername2" 
+                          placeholder="Port of Audit" formControlName="auditPort" >
+                        </div>
+                      </div>
+                    </div>
+
+                    <br>
+                    <div class="center">
+                        <button type="submit" class="btn-primary">Save</button>
+                    </div>
+            
+                  </form>
+            
+                </div>
+              
+            </mat-expansion-panel>
+        </mat-accordion>
+        
+      <!-- Vessel info and Audit info --> 
+      <div class="card" *ngIf="deficiencyFlag">
+        <div class="card-header">
+          Deficiency
+        </div>
+        <div class="card-body defCardBody">
+          <div class="pl-lg-4">
+    
+    
+            <!-- Deficiency Btns -->
+    
+            <div>
+              <div class='float-left'>
+              <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#basicExample"
+                (click)="defCreateModal.show() ; onOpenCreateModel()"  *ngIf="!flag">CREATE <i class="fas fa-plus-circle"></i></button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#basicExample"
+                (click)="defEditModal.show()" *ngIf="flag">EDIT <i class="far fa-edit"></i></button>
+              <button type="button" class="btn btn-outline-danger btn-sm disable" data-toggle="modal" data-target="#basicExample"
+                (click)="frameDelete.show()"*ngIf="flag" >DELETE <i class="far fa-trash-alt"></i></button>
+              <button type="button" class="btn btn-outline-info btn-sm disable" data-toggle="modal" data-target="#basicExample"
+                (click)="defHistoryModal.show() ; onDefHstry()"*ngIf="flag" >History <i class="fa fa-history" aria-hidden="true"></i>
+              </button>  
+            </div>
+              <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+                <button mdbBtn type="button" (click)="defStat('OPEN')"  color="primary" class="waves-light" mdbWavesEffect>OPEN</button>
+                <button mdbBtn type="button" (click)="defStat('CLOSE')" color="primary" class="waves-light" mdbWavesEffect>CLOSE</button>
+                <button mdbBtn type="button" (click)="defStat('ALL')" color="primary" class="waves-light" mdbWavesEffect>ALL</button>
+            </div>
+    
+                
+              <!-- <button type="button" mdbBtn color="primary" class="relative waves-light" (click)="basicModal.show()"
+                mdbWavesEffect>Launch demo modal</button> -->
+    
+              <div mdbModal #defCreateModal="mdbModal" class="modal fade modal-info" tabindex="-1" role="dialog"
+                aria-labelledby="myBasicModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header modalHead">
+                      <button type="button" class="close pull-right" aria-label="Close" (click)="defCreateModal.hide()">
+                        <span style="color:white" aria-hidden="true">×</span>
+                      </button>
+                      <h4 class="modal-title w-100" id="myModalLabel">Create Deficiency</h4>
+                    </div>
+                   
+                    <div class="modal-body">
+                      <form [formGroup]="deficiencyCreateForm" (ngSubmit)="onSubmit()">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                  <mat-label>Serial Number</mat-label> 
+                                  <input matInput placeholder="Serial Number" formControlName="serial_no">
+                                </mat-form-field>
+                        </div>
+    
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Category of NC</mat-label>
+                              <mat-select formControlName="category_of_nc">
+                                <mat-option *ngFor="let category_of_nc of categories_of_nc" [value]="category_of_nc.value" >
+                                  {{category_of_nc.viewValue}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+    
+                          <div class="col-md-4">
+                              <mat-form-field appearance="outline">
+                                <mat-label>Code Ref of NC</mat-label>
+                                <mat-select formControlName="code_ref_of_nc">
+                                  <mat-option *ngFor="let coderef of coderef_of_nc" [value]="coderef.value">
+                                    {{coderef.viewValue}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+    
+                          
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Detail of NC/OBS</mat-label> 
+                              <textarea matInput placeholder="Detail of NC/OBS" formControlName="details_of_nc"></textarea>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Target Date</mat-label> 
+                              <input matInput [matDatepicker]="picker2" placeholder="" formControlName="target_date">
+                              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                              <mat-datepicker #picker2></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>MNC/NC/OBS</mat-label> 
+                              <mat-select formControlName="mnc_nc_obs">
+                                  <mat-option *ngFor="let mnc_nc_obs of mnc_obs_nc" [value]="mnc_nc_obs.value">
+                                    {{mnc_nc_obs.viewValue}}
+                                  </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Corrective Action Plan</mat-label>
+                              <textarea matInput placeholder="Corrective Action Plan" formControlName="corrective_action_plan"></textarea>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Accept CAP by Auditor</mat-label> 
+                              <input matInput placeholder="Accept CAP by Auditor" formControlName="accept_cap_by_auditor">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Comments by Auditor</mat-label>
+                              <textarea matInput placeholder="Comments by Auditor" formControlName="comments_by_auditor"></textarea>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Ship Revised CAP</mat-label>
+                               <input matInput placeholder="Ship Revised CAP" formControlName="ship_revised_by_cap">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Accept Revised CAP by Auditor</mat-label> 
+                              <mat-select formControlName="accept_revised_cap_by_auditor">
+                                  <mat-option *ngFor="let accept_revised_cap_by_auditor of accept_revised_by_cap" [value]="accept_revised_cap_by_auditor.value">
+                                    {{accept_revised_cap_by_auditor.viewValue}}
+                                  </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Root Cause Analysis
+                                  (Yes or No)</mat-label>
+                                  <mat-select formControlName="root_cause_analysis">
+                                      <mat-option *ngFor="let root_cause of root_cause_analysis" [value]="root_cause.value">
+                                        {{root_cause.viewValue}}
+                                      </mat-option>
+                                    </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline" floatLabel="never" color="primary"> 
+                              <mat-label>Cause</mat-label>
+                              <mat-select formControlName="cause">
+                              <mat-option *ngFor="let cause of causes" [value]="cause.value">
+                                {{cause.viewValue}}
+                              </mat-option>
+                            </mat-select>
+                            </mat-form-field>
+                          </div>
+                          
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline" floatLabel="never" color="primary">
+                              <mat-label>Closed Date</mat-label>
+                              <input matInput [matDatepicker]="picker3" placeholder="Choose a Closed date" formControlName="close_date">
+                              <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                              <mat-datepicker #picker3></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+    
+                          <div class="col-md-4">
+                              <mat-form-field appearance="outline">
+                                <mat-label>Status</mat-label> 
+                                <mat-select formControlName="status">
+                                    <mat-option *ngFor="let stat of status" [value]="stat.value">
+                                      {{stat.viewValue}}
+                                    </mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                  <mat-label>Preventive Action</mat-label>
+                                  <textarea matInput placeholder="Preventive Action" formControlName="preventive_action"></textarea>
+                                </mat-form-field>
+                              </div>
+                            
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Remarks</mat-label>
+                                     <input matInput placeholder="Remarks" formControlName="remarks">
+                                  </mat-form-field>
+                            </div>
+      
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Error Check</mat-label>
+                                     <input matInput placeholder="Error Check" formControlName="error_check">
+                                  </mat-form-field>
+                            </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-4">
+                                  <mat-form-field appearance="outline" floatLabel="never" color="primary">
+                                    <mat-label>Date Of Audit</mat-label>
+                                    <input matInput [matDatepicker]="picker4" placeholder="Choose Audit date" formControlName="audit_date">
+                                    <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker4></mat-datepicker>
+                                  </mat-form-field>
+                                </div>
+                                                       
+        
+                                <div class="col-md-4">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Name Of Auditor</mat-label>
+                                         <input matInput placeholder="Name Of Auditor" formControlName="name_of_auditor">
+                                      </mat-form-field>
+                                </div>
+
+                                <input type='hidden' formControlName="isChecked" value="false">
+    
+                                <div class="col-md-4">
+                                    
+                                  <input (click)="defCreateModal.hide()" type="submit" value="Create" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect>
+                                      
+                                </div>
+                            </div>
+    
+                          
+                      </form>
+                      
+    
+                    </div>
+                   
+                  </div>
+                </div>
+              </div>
+    
+    
+    <!-- edit -->
+    
+    
+    <div mdbModal #defEditModal="mdbModal" class="modal fade modal-info" tabindex="-1" role="dialog"
+                aria-labelledby="myBasicModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header modalHead">
+                      <button type="button" class="close pull-right" aria-label="Close" (click)="defEditModal.hide()">
+                        <span style="color:white" aria-hidden="true">×</span>
+                      </button>
+                      <h4 class="modal-title w-100" id="myModalLabel">Edit Deficiency</h4>
+                    </div>
+                   
+                    <div class="modal-body">
+                      <form [formGroup]="deficiencyEditForm" (ngSubmit)="onSubmitEdit()">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                  <mat-label>Serial Number</mat-label> 
+                                  <input matInput placeholder="Serial Number" [(ngModel)]="editDeficiency.DEFICIENCY_ID" readonly
+                                  formControlName="serial_no">
+                                </mat-form-field>
+                        </div>
+    
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Category of NC</mat-label>
+                              <mat-select formControlName="category_of_nc" [(ngModel)]="category_of_nc_opt">
+                                <mat-option *ngFor="let category_of_nc of categories_of_nc" [value]="category_of_nc.value" >
+                                  {{category_of_nc.viewValue}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </div>
+    
+                          <div class="col-md-4">
+                              <mat-form-field appearance="outline">
+                                <mat-label>Code Ref of NC</mat-label>
+                                <mat-select formControlName="code_ref_of_nc"  [(ngModel)]="code_ref_of_nc_opt">
+                                  <mat-option *ngFor="let coderef of coderef_of_nc" [value]="coderef.value">
+                                    {{coderef.viewValue}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </div>
+    
+                          
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Detail of NC/OBS</mat-label> 
+                              <textarea matInput placeholder="Detail of NC/OBS" [(ngModel)]="editDeficiency.details_of_nc" 
+                              formControlName="details_of_nc"></textarea>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Target Date</mat-label> 
+                              <input matInput [matDatepicker]="picker5" placeholder="" [(ngModel)]="editDeficiency.TARGET_DATE" 
+                              formControlName="target_date">
+                              <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+                              <mat-datepicker #picker5></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>MNC/NC/OBS</mat-label> 
+                              <mat-select formControlName="mnc_nc_obs"  [(ngModel)]="mnc_nc_obs_opt">
+                                  <mat-option *ngFor="let mnc_nc_obs of mnc_obs_nc" [value]="mnc_nc_obs.value">
+                                    {{mnc_nc_obs.viewValue}}
+                                  </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Corrective Action Plan</mat-label>
+                              <textarea matInput placeholder="Corrective Action Plan" [(ngModel)]="editDeficiency.CORRECTIVE_ACTION_PLAN" 
+                              formControlName="corrective_action_plan"></textarea>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Accept CAP by Auditor</mat-label> 
+                              <input matInput placeholder="Accept CAP by Auditor" [(ngModel)]="editDeficiency.ACCEPT_CAP_BY_AUDITOR" 
+                              formControlName="accept_cap_by_auditor">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Comments by Auditor</mat-label>
+                              <textarea matInput placeholder="Comments by Auditor" [(ngModel)]="editDeficiency.COMMENTS_BY_AUDITOR" 
+                              formControlName="comments_by_auditor"></textarea>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Ship Revised CAP</mat-label>
+                               <input matInput placeholder="Ship Revised CAP" [(ngModel)]="editDeficiency.SHIP_REVISED_CAP" 
+                               formControlName="ship_revised_by_cap">
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Accept Revised CAP by Auditor</mat-label> 
+                              <mat-select formControlName="accept_revised_cap_by_auditor"  [(ngModel)]="ACCEPT_REVISED_CAP_BY_AUDITOR">
+                                  <mat-option *ngFor="let accept_revised_cap_by_auditor of accept_revised_by_cap" [value]="accept_revised_cap_by_auditor.value">
+                                    {{accept_revised_cap_by_auditor.viewValue}}
+                                  </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                          </div>
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline">
+                              <mat-label>Root Cause Analysis
+                                  (Yes or No)</mat-label>
+                                  <mat-select formControlName="root_cause_analysis"  [(ngModel)]="ROOT_CAUSE_ANALYSIS">
+                                      <mat-option *ngFor="let root_cause of root_cause_analysis" [value]="root_cause.value">
+                                        {{root_cause.viewValue}}
+                                      </mat-option>
+                                    </mat-select>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline" floatLabel="never" color="primary"> 
+                              <mat-label>Cause</mat-label>
+                              <mat-select formControlName="cause"  [(ngModel)]="cause_opt">
+                              <mat-option *ngFor="let cause of causes" [value]="cause.value">
+                                {{cause.viewValue}}
+                              </mat-option>
+                            </mat-select>
+                            </mat-form-field>
+                          </div>
+                          
+                          <div class="col-md-4">
+                            <mat-form-field appearance="outline" floatLabel="never" color="primary">
+                              <mat-label>Closed Date</mat-label>
+                              <input matInput [matDatepicker]="picker6" [(ngModel)]="editDeficiency.CLOSED_DATE" placeholder="Choose a Closed date" 
+                              formControlName="close_date">
+                              <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
+                              <mat-datepicker #picker6></mat-datepicker>
+                            </mat-form-field>
+                          </div>
+    
+                          <div class="col-md-4">
+                              <mat-form-field appearance="outline">
+                                <mat-label>Status</mat-label> 
+                                <mat-select formControlName="status"  [(ngModel)]="status_opt">
+                                    <mat-option *ngFor="let stat of status" [value]="stat.value">
+                                      {{stat.viewValue}}
+                                    </mat-option>
+                                  </mat-select>
+                              </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                  <mat-label>Preventive Action</mat-label>
+                                  <textarea matInput placeholder="Preventive Action" [(ngModel)]="editDeficiency.PREVENTIVE_ACTION" 
+                                  formControlName="preventive_action"></textarea>
+                                </mat-form-field>
+                              </div>
+                            
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Remarks</mat-label>
+                                     <input matInput placeholder="Remarks" [(ngModel)]="editDeficiency.REMARK" 
+                                     formControlName="remarks">
+                                  </mat-form-field>
+                            </div>
+      
+                            <div class="col-md-4">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Error Check</mat-label>
+                                     <input matInput placeholder="Error Check" [(ngModel)]="editDeficiency.ERROR_CHECK" 
+                                     formControlName="error_check">
+                                  </mat-form-field>
+                            </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-4">
+                                  <mat-form-field appearance="outline" floatLabel="never" color="primary">
+                                    <mat-label>Date Of Audit</mat-label>
+                                    <input matInput [matDatepicker]="picker7" placeholder="Choose Audit date" [(ngModel)]="editDeficiency.AUDIT_DATE" 
+                                    formControlName="audit_date">
+                                    <mat-datepicker-toggle matSuffix [for]="picker7"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker7></mat-datepicker>
+                                  </mat-form-field>
+                                </div>
+                                                       
+        
+                                <div class="col-md-4">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Name Of Auditor</mat-label>
+                                         <input matInput placeholder="Name Of Auditor" [(ngModel)]="editDeficiency.USER_NAME" 
+                                         formControlName="name_of_auditor">
+                                      </mat-form-field>
+                                </div>
+    
+                                <div class="col-md-4">
+                                    
+                                <input type="submit" [disabled]="false"(click)="defEditModal.hide()" value="Save" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect>
+                                      
+                                </div>
+                            </div> 
+                      </form>                          
+                    </div>             
+                  </div>
+                </div>
+              </div>      
+    <!-- end edit -->    
+<!-- edit -->        
+<div mdbModal #defHistoryModal="mdbModal" class="modal fade modal-info" tabindex="-1" role="dialog"
+aria-labelledby="myBasicModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+  <div class="modal-content">
+    <div class="modal-header modalHead">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="defHistoryModal.hide()">
+        <span style="color:white" aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100" id="myModalLabel">Deficiency History</h4>
+    </div>
+   
+    <div class="modal-body">
+      <div class="table-responsive ">
+        <table class="table deficiencyTable">
+          <thead class="">
+            <tr>
+             
+              <th scope="col">Serial Number</th>
+              <th scope="col">Category of NC</th>
+              <th scope="col">Code Ref of NC</th>
+              <th scope="col">Detail of NC/OBS</th>
+              <th scope="col">Target Date (if any)</th>
+              <th scope="col">MNC/NC/OBS</th>
+              <th scope="col">Corrective Action Plan</th>
+              <th scope="col">Accept CAP by Auditor</th>
+              <th scope="col">Comments by Auditor</th>
+              <th scope="col">Ship Revised CAP</th>
+              <th scope="col">Accept Revised CAP by Auditor</th>
+              <th scope="col">Root Cause Analysis</th>
+              <th scope="col">Cause</th>
+              <th scope="col">Closed Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Preventive Action</th>
+              <th scope="col">Remark</th>
+              <th scope="col">Error Check</th>
+              <th class="col-wrap">Date of Audit</th>
+              <th class="col-wrap">Name of Auditor</th>
+              
+            </tr>
+            
+          </thead>
+          <tbody class=""  >
+             
+            <tr *ngFor="let def of defHstryData">
+                            
+              <td class="col-wrap">{{def.serial_no}}</td>
+              <td class="col-wrap">{{def.category_of_nc}}</td>
+              <td class="col-wrap">{{def.code_ref_of_nc}}</td>
+              <td class="col-wrap">{{def.details_of_nc}}</td>
+              <td class="col-wrap">{{def.target_date}}</td>
+              <td class="col-wrap">{{def.mnc_nc_obs}}
+              </td>
+              <td class="col-wrap">{{def.corrective_action_plan}}</td>
+              <td class="col-wrap">{{def.accept_cap_by_auditor}}</td>
+              <td class="col-wrap">{{def.comments_by_auditor}}</td>
+              <td class="col-wrap">{{def.ship_revised_by_cap}}</td>
+              <td class="col-wrap">{{def.accept_revised_cap_by_auditor}}</td>
+              <td class="col-wrap">{{def.root_cause_analysis}}</td>
+              <td class="col-wrap">{{def.cause}}</td>
+              <td class="col-wrap">{{def.close_date}}</td>
+              <td class="col-wrap">{{def.status}}</td>
+              <td class="col-wrap">{{def.preventive_action}}</td>
+              <td class="col-wrap">{{def.remarks}}</td>
+              <td class="col-wrap">{{def.error_check}}</td>
+              <td class="col-wrap">{{def.audit_date}}</td>
+              <td class="col-wrap">{{def.name_of_auditor}}</td>
+             
+            </tr>
+            
+           
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+ 
+  </div>
+</div>
+</div>
+<!-- end edit -->    
+            </div>
+    
+            <!-- Deficiency Btns -->
+    
+            <div></div>
+    
+            <!-- Table Display -->
+    
+            <div class="table-responsive card tableCard ">
+              <table class="table deficiencyTable">
+                <thead class="card-header">
+                  <tr>
+                    <th scope="col">Select</th>
+                    <th scope="col">Serial Number</th>
+                    <th scope="col">Category of NC</th>
+                    <th scope="col">Code Ref of NC</th>
+                    <th scope="col">Detail of NC/OBS</th>
+                    <th scope="col">Target Date (if any)</th>
+                    <th scope="col">MNC/NC/OBS</th>
+                    <th scope="col">Corrective Action Plan</th>
+                    <th scope="col">Accept CAP by Auditor</th>
+                    <th scope="col">Comments by Auditor</th>
+                    <th scope="col">Ship Revised CAP</th>
+                    <th scope="col">Accept Revised CAP by Auditor</th>
+                    <th scope="col">Root Cause Analysis</th>
+                    <th scope="col">Cause</th>
+                    <th scope="col">Closed Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Preventive Action</th>
+                    <th scope="col">Remark</th>
+                    <th scope="col">Error Check</th>
+                    <th class="col-wrap">Date of Audit</th>
+                    <th class="col-wrap">Name of Auditor</th>
+                    
+                  </tr>
+                  
+                </thead>
+               
+
+                <tbody class="card-body">
+                    <!-- <ng-container *ngFor="let def of deficiencyData.reverse(); let i = index" [attr.data-index]="i" >
+                        <tr *ngIf="def.status===switchStatus()"  [ngClass]="{'my-class':switchStatus()=='ALL'}" (click)="RowSelected(def,i)" [class.hide]="def.serial_no === serialNo">
+                          
+                          <td class="col-wrap">
+                          <mat-checkbox [checked]="personCheckedIndex === i" (change)="personCheckboxChange($event, i)">
+                          </mat-checkbox></td>
+                         
+                          <td class="col-wrap">{{def.DEFICIENCY_ID}}</td>
+                          <td class="col-wrap">{{def.category_of_nc}}</td>
+                          <td class="col-wrap">{{def.code_ref_of_nc}}</td>
+                          <td class="col-wrap">{{def.details_of_nc}}</td>
+                          <td class="col-wrap">{{def.target_date}}</td>
+                          <td class="col-wrap">{{def.mnc_nc_obs}}
+                          </td>
+                          <td class="col-wrap">{{def.corrective_action_plan}}</td>
+                          <td class="col-wrap">{{def.accept_cap_by_auditor}}</td>
+                          <td class="col-wrap">{{def.COMMENTS_BY_AUDITOR}}</td>
+                          <td class="col-wrap">{{def.ship_revised_by_cap}}</td>
+                          <td class="col-wrap">{{def.accept_revised_cap_by_auditor}}</td>
+                          <td class="col-wrap">{{def.root_cause_analysis}}</td>
+                          <td class="col-wrap">{{def.cause}}</td>
+                          <td class="col-wrap">{{def.close_date}}</td>
+                          <td class="col-wrap">{{def.status}}</td>
+                          <td class="col-wrap">{{def.preventive_action}}</td>
+                          <td class="col-wrap">{{def.remarks}}</td>
+                          <td class="col-wrap">{{def.error_check}}</td>
+                          <td class="col-wrap">{{def.audit_date}}</td>
+                          <td class="col-wrap">{{def.name_of_auditor}}</td>
+                         
+                        </tr>
+
+
+                        <tr  *ngIf="def_status==='ALL'"  (click)="RowSelected(def,i)" [class.hide]="def.serial_no === serialNo">
+                          
+                            <td class="col-wrap">
+                            <mat-checkbox [checked]="personCheckedIndex === i" (change)="personCheckboxChange($event, i)">
+                            </mat-checkbox></td>
+                           
+                            <td class="col-wrap">{{def.DEFICIENCY_ID}}</td>
+                            <td class="col-wrap">{{def.category_of_nc}}</td>
+                            <td class="col-wrap">{{def.code_ref_of_nc}}</td>
+                            <td class="col-wrap">{{def.details_of_nc}}</td>
+                            <td class="col-wrap">{{def.target_date}}</td>
+                            <td class="col-wrap">{{def.mnc_nc_obs}}
+                            </td>
+                            <td class="col-wrap">{{def.corrective_action_plan}}</td>
+                            <td class="col-wrap">{{def.accept_cap_by_auditor}}</td>
+                            <td class="col-wrap">{{def.comments_by_auditor}}</td>
+                            <td class="col-wrap">{{def.ship_revised_by_cap}}</td>
+                            <td class="col-wrap">{{def.accept_revised_cap_by_auditor}}</td>
+                            <td class="col-wrap">{{def.root_cause_analysis}}</td>
+                            <td class="col-wrap">{{def.cause}}</td>
+                            <td class="col-wrap">{{def.close_date}}</td>
+                            <td class="col-wrap">{{def.status}}</td>
+                            <td class="col-wrap">{{def.preventive_action}}</td>
+                            <td class="col-wrap">{{def.remarks}}</td>
+                            <td class="col-wrap">{{def.error_check}}</td>
+                            <td class="col-wrap">{{def.audit_date}}</td>
+                            <td class="col-wrap">{{def.name_of_auditor}}</td>
+                           
+                          </tr>
+
+                        </ng-container> -->
+
+
+                        <tr *ngFor="let def of deficiencyData; let i = index" [attr.data-index]="i"  (click)="RowSelected(def,i)">
+                            <td class="col-wrap" >
+                                <mat-checkbox [checked]="personCheckedIndex === i" (change)="personCheckboxChange($event, i)">
+                                </mat-checkbox></td>
+                               
+                                <td class="col-wrap">{{def.DEFICIENCY_ID}}</td>
+                                <td class="col-wrap">{{def.category_of_nc}}</td>
+                                <td class="col-wrap">{{def.code_ref_of_nc}}</td>
+                                <td class="col-wrap">{{def.details_of_nc}}</td>
+                                <td class="col-wrap">{{def.TARGET_DATE}}</td>
+                                <td class="col-wrap">{{def.mnc_nc_obs}}
+                                </td>
+                                <td class="col-wrap">{{def.CORRECTIVE_ACTION_PLAN}}</td>
+                                <td class="col-wrap">{{def.ACCEPT_CAP_BY_AUDITOR}}</td>
+                                <td class="col-wrap">{{def.COMMENTS_BY_AUDITOR}}</td>
+                                <td class="col-wrap">{{def.SHIP_REVISED_CAP}}</td>
+                                <td class="col-wrap">{{def.ACCEPT_REVISED_CAP_BY_AUDITOR}}</td>
+                                <td class="col-wrap">{{def.ROOT_CAUSE_ANALYSIS}}</td>
+                                <td class="col-wrap">{{def.cause}}</td>
+                                <td class="col-wrap">{{def.CLOSED_DATE}}</td>
+                                <td class="col-wrap">{{def.STATUS}}</td>
+                                <td class="col-wrap">{{def.PREVENTIVE_ACTION}}</td>
+                                <td class="col-wrap">{{def.REMARK}}</td>
+                                <td class="col-wrap">{{def.ERROR_CHECK}}</td>
+                                <td class="col-wrap">{{def.AUDIT_DATE}}</td>
+                                <td class="col-wrap">{{def.USER_NAME}}</td>
+                        </tr>
+
+
+                </tbody>
+              </table>
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- End Table Display -->
+    

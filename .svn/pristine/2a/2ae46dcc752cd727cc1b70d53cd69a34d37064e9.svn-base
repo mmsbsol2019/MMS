@@ -1,0 +1,292 @@
+const dbCon = require('./dbConnect')
+const ipcMain = require('electron').ipcMain
+const Constants = require('../DBConnection/constants')
+const crud = require('./CRUD')
+const conn = require('./dbConnection')
+
+var ainfo = ['AUDIT_TRACK_NO', 1, 'SPA', 1, 1, 1, '1998-05-05', 'AUDIT_PORT', 101, 'CREATED_USER_ID'];
+
+var ma_def = ['DEF_ID_01', 1, 'AUDIT_TRACK_NO', 1, 1, 'ROO', 1, 'STATUS', 'DEF_TYPE', 'SASI@GMAIL.COM', '2011-05-06'];
+
+var def = [123, 'SPANAV003', 'NA', 'YES', 'Radar acceptable PM range value was not entered in Radar logBook',
+  '2019-01-01', 'Radar log specification page filled properly & Radar acceptable PM range entered',
+  'Radar log specification page to be verified by New joined officer', 'NA', 'YES', '2018-03-03', 'Radar log specification page to be verified by New joined officer',
+  'NA', 'Y', 'SASI@GMAIL.COM', '1999-02-03'];
+
+ipcMain.on('check-username-password-request', (event, data) => {
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_LOGIN_USER, data)
+        .then((value) => {
+          event.sender.send('check-username-password-response', value)
+          connection.release();
+        })
+        .catch(() => {
+          console.log('error');
+        })
+
+    });
+})
+
+ipcMain.on('get-user-details-request', (event, data) => {
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_LOGIN_USER_DETAILS, data)
+        .then((value) => {
+          event.sender.send('get-user-details-response', value)
+          connection.release();
+        })
+        .catch(() => {
+          console.log('error');
+        })
+
+    });
+})
+
+ipcMain.on('get-audit-category-request', (event, data) => {
+
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_AUDIT_CATEGORY, data)
+        .then((value) => {
+          event.sender.send('get-audit-category-response', value)
+          connection.release();
+        }).catch(() => {
+          console.log('error');
+        })
+
+    })
+
+})
+
+ipcMain.on('find-vessel-info-request', (event, data) => {
+  var dataS;
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_VESSEL_DETAILS, data)
+        .then((value) => {
+          dataS = value;
+          crud.find(connection, Constants.FIND_COMPANY, data)
+            .then((value) => {
+              dataS.push(value)
+              crud.find(connection, Constants.FIND_AUDIT_TYPE, data)
+                .then((value) => {
+                  dataS.push(value)
+                  crud.find(connection, Constants.FIND_AUDIT_INTERVAL, data)
+                    .then((value) => {
+                      dataS.push(value)
+                      event.sender.send('find-vessel-info-response', dataS)
+                      connection.release();
+                    })
+                })
+            })
+        })
+    }).catch(() => {
+      console.log('error');
+    })
+
+})
+
+ipcMain.on('get-deficiency-data-request', (event, data) => {
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_DEF, data)
+        .then((value) => {
+          event.sender.send('get-deficiency-data-response', value)
+          connection.release();
+        })
+
+    }).catch(() => {
+      console.log('error');
+    })
+})
+
+ipcMain.on('find-deficiency-history-request', (event, data) => {
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_DEF_HISTORY, data)
+        .then((value) => {
+          event.sender.send('find-deficiency-history-response', value)
+          connection.release();
+        })
+
+    }).catch(() => {
+      console.log('error');
+    })
+})
+
+
+ipcMain.on('get-deficiency-master-data-request', (event, data,paramAuditCode) => {
+  var dataS = [];
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_AUDIT_CODE_CONDITION1, paramAuditCode)
+        .then((value) => {
+          dataS.push(value)
+          crud.find(connection, Constants.FIND_AUDIT_CODE_REF, data)
+            .then((value) => {
+              dataS.push(value)
+              crud.find(connection, Constants.FIND_DEF_CAUSE, data)
+                .then((value) => {
+                  dataS.push(value)
+                  event.sender.send('get-deficiency-master-data-response', dataS)
+                  connection.release();
+                })
+            })
+        })
+
+    }).catch(() => {
+      console.log('error');
+    })
+})
+
+ipcMain.on('save-deficiency-data-request', (event, data, findData) => {
+
+  conn.getConnection()
+    .then((connection) => {
+      crud.insert(connection, Constants.SAVE_MA_AUDIT_INFO_IF_NOT_EXIST, data[0])
+        .then((value) => {
+          crud.insert(connection, Constants.SAVE_MA_AUDIT_DEFICIENCY, data[1])
+            .then((value) => {
+              crud.insert(connection, Constants.SAVE_AUDIT_DEFICIENCY_REF, data[2])
+                .then((value) => {
+                  crud.find(connection, Constants.FIND_DEF, findData)
+                    .then((value) => {
+                      console.log('FIND_DEF')
+                      event.sender.send('save-deficiency-data-response', value)
+                      connection.release();
+                    })
+                })
+            })
+        })
+
+    }).catch(() => {
+      console.log('error');
+    })
+})
+
+ipcMain.on('update-deficiency-data-request', (event, data, findData) => {
+
+  conn.getConnection()
+    .then((connection) => {
+      crud.insert(connection, Constants.SAVE_AUDIT_DEFICIENCY_REF, data[0])
+        .then((value) => {
+          crud.update(connection, Constants.UPDATE_MA_DEF, data[1])
+            .then((value) => {
+              crud.find(connection, Constants.FIND_DEF, findData)
+              .then((value) => {
+              console.log('FIND_DEF')
+              event.sender.send('update-deficiency-data-response', value)
+              connection.release();
+            })
+          })
+        })
+
+    }).catch(() => {
+      console.log('error');
+    })
+})
+
+ipcMain.on('get-def-txnMax-request', (event, data) => {
+  conn.getConnection()
+    .then((connection) => {
+      crud.find(connection, Constants.FIND_TXN_MAX, data)
+        .then((value) => {
+          event.sender.send('get-def-txnMax-response', value)
+          connection.release();
+        })
+
+    }).catch(() => {
+      console.log('error');
+    })
+})
+
+
+ipcMain.on('delete-deficiency-data-request', (event, data,findData) => {
+  conn.getConnection()
+    .then((connection) => {
+      crud.delete(connection, Constants.DELETE_AUDIT_DEF, data)
+        .then((value) => {
+          crud.delete(connection, Constants.DELETE_MA_DEF, data)
+          .then((value) => {
+            crud.find(connection, Constants.FIND_DEF, findData)
+        .then((value) => {
+          event.sender.send('delete-deficiency-data-response', value)
+          connection.release();
+          })
+        .catch(() => {
+          console.log('error');
+        })
+      })
+      })
+    });
+})
+
+ipcMain.on('get-ism-seq-request', (event) => {
+  conn.getConnection()
+    .then((connection) => {
+            crud.find(connection, Constants.GENERATE_SEQ_ISM)
+        .then((value) => {
+          event.sender.send('get-ism-seq-response', value)
+          connection.release();
+          })
+        .catch(() => {
+          console.log('error');
+        })
+    });
+})
+ipcMain.on('get-isps-seq-request', (event) => {
+  conn.getConnection()
+    .then((connection) => {
+            crud.find(connection, Constants.GENERATE_SEQ_ISPS)
+        .then((value) => {
+          event.sender.send('get-isps-seq-response', value)
+          connection.release();
+          })
+        .catch(() => {
+          console.log('error');
+        })
+    });
+})
+ipcMain.on('get-ems-seq-request', (event) => {
+  conn.getConnection()
+    .then((connection) => {
+            crud.find(connection, Constants.GENERATE_SEQ_EMS)
+        .then((value) => {
+          event.sender.send('get-ems-seq-response', value)
+          connection.release();
+          })
+        .catch(() => {
+          console.log('error');
+        })
+    });
+})
+ipcMain.on('get-nav-seq-request', (event) => {
+  conn.getConnection()
+    .then((connection) => {
+            crud.find(connection, Constants.GENERATE_SEQ_NAV)
+        .then((value) => {
+          event.sender.send('get-nav-seq-response', value)
+          connection.release();
+          })
+        .catch(() => {
+          console.log('error');
+        })
+    });
+})
+ipcMain.on('get-safety-seq-request', (event) => {
+  conn.getConnection()
+    .then((connection) => {
+            crud.find(connection, Constants.GENERATE_SEQ_SAFETY)
+        .then((value) => {
+          event.sender.send('get-safety-seq-response', value)
+          connection.release();
+          })
+        .catch(() => {
+          console.log('error');
+        })
+    });
+})
+
+
+

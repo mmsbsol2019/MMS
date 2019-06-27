@@ -1,0 +1,182 @@
+<!-- nav bar-->
+<nav class="navbar navbar-expand-md bg-primary navbar-dark ">
+  <a class="navbar-brand ">
+    <h5>VBTA APPLICATION CONFIGURATION</h5>
+  </a>
+</nav>
+<!-- nav bar end -->
+<!--application-->
+<div class="row  ">
+  <div class="col-md-6">
+    <img src="assets\img\0.jpg" width="150" height="627" class="card-img">
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-body   text-center">
+      <form [formGroup]="form">
+
+        <h6 class="card-title  ">Configuration</h6>
+        <div class="form-group">
+          <mat-form-field class="col-md-8">
+            <mat-label>Please select your Vessel</mat-label>
+            <mat-select formControlName="vessel">
+              <mat-option id="dropdowm_header" disabled mat-selected>Please select your Vessel</mat-option>
+              <mat-option  *ngFor="let vessel of vslArray" [value]="vessel" (click)="selectVessel(event,vessel)">{{vessel}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- <div class="form-group">
+          <mat-form-field class="col-md-8">
+            <mat-label>Please select Username</mat-label>
+            <mat-select #sl formControlName="username" [disabled]="!usersDropListDisable" multiple>
+              <mat-option id="dropdowm_header1" disabled mat-selected> Please select Username
+                <button class="close" style="padding-top:10px" aria-label="Close" (click)="sl.close()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </mat-option>
+
+              <mat-option id="dropdowm_body1" *ngFor="let arrayValue of userArray" [value]="arrayValue" (click)="selectUser()" >{{arrayValue}}</mat-option>
+              
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+        <div class="form-group">
+        <mat-form-field class="col-md-8">
+            <mat-label>Toppings</mat-label>
+            <mat-select formControlName="username" multiple>
+                <mat-option id="dropdowm_header1" disabled mat-selected> Please select Username
+                    <button class="close" style="padding-top:10px" aria-label="Close" (click)="sl.close()">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </mat-option>
+              <mat-option *ngFor="let topping of userArray" [value]="topping">{{topping}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          </div>
+
+        <ng-template #content let-modal>
+          <div class="modal-header " style=" background-color:rgb(101, 161, 220)">
+            <h4 class="modal-title " style="padding-left: 140px" id="modal-basic-title">CONFIRMATION</h4>
+            <!-- <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-2">
+                 
+
+                <img src="assets\img\4.png" width="65" height="65">
+                
+
+              </div>
+              <div class="col-md-10">
+                 
+                <p class="card-text" style="color: #f3090e; margin-top: 7px;">Please note that once confirm the selected data cannot be modify.</p>
+              
+              </div>
+            </div>
+            <div class="column  ">
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6 class="card-title " style="margin-top: 12px;">Selected Vessel: </h6>
+                    </div>
+                    <div class="col-md-6 text-center" style="margin-top: 12px; margin-bottom: 12px; height: 19px">
+                      
+                      <p class="thicker">{{selectedVessel}}</p>
+                     
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-6">
+
+
+                  <h6 class="card-title " style="margin-top: 12px;">Selected Users:</h6>
+                  </div>
+                  <div class="col-md-6" id="cardSize" style="margin-top: 0px;">
+                   
+                  <div  style="margin-top: 12px;" *ngFor="let arrays of selectedUsers">
+                    <ul>
+                      <li>
+                        {{arrays}}
+                      </li>
+                    </ul>
+                  </div>
+                  </div>
+                  </div>
+                  
+                  
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style=" background-color:rgb(186, 207, 226)">
+            <button type="button" class="btn btn-outline-primary" (click)="modal.close()" (click)="modalWindowModify()">Modify</button>
+            <button type="button" class="btn btn-primary" style="margin-right: 150px;" (click)="modal.close()" (click)="modalWindowConfirm()">Confirm</button>
+          </div>
+        </ng-template>
+
+
+        <button type="button" mdbBtn color="secondary" class="relative waves-light" (click)="basicModal.show();openConfirmationModal()" mdbWavesEffect>ASDF</button>
+
+<div mdbModal #basicModal="mdbModal" class="modal fade bottom" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><img class="img-responsive" src="assets/img/setting.png" width="40px" height="40px">  Vessel-User Configuration </h4>
+      </div>
+      <div class="modal-body">
+          <!-- <img class="img-responsive d-none" src="assets/img/user.png" width="50px" height="50px">
+          <img  class="d-none" src="assets\img\4.png" width="65" height="65"> -->
+          <div class="row ">
+            <div class="col-sm-12">
+                <ul class="list-group list-group-horizontal-md float-right">
+                    <li class="list-group-item"><small class="text-muted h6">Selected Vessel</small></li>
+                    <li class="list-group-item text-monospace font-weight-bold">{{selectedVessel}}</li>             
+                </ul>
+            </div>         
+          </div>
+          <br>
+       
+        <div>
+              <pre class="note note-info">Selected Users</pre>
+
+              <ul style="list-style: none;">
+                  <li *ngFor="let person of selectedUsers">
+                      <pre class="note note-primary">{{ person }}</pre> 
+                  </li>                 
+              </ul>
+              <pre class="note note-warning text-wrap"> Please note that once confirm the selected data cannot be modify</pre>                 
+        </div> 
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close" (click)="basicModal.hide()" mdbWavesEffect>Close</button>
+        <button type="button" mdbBtn color="primary" (click)="getUserId()" class="relative waves-light" mdbWavesEffect >Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        <div>
+          <button id="Button" mat-raised-button color="primary" [disabled]="!nextButtonDisable" (click)="nextButton(content)">Next</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

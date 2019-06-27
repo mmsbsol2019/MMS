@@ -1,0 +1,122 @@
+import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { DataService } from '../services/data.service';
+import { HttpClient } from '@angular/common/http';
+import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
+import { IpcCal } from '../ipcCall';
+import { AppService } from '../app.service';
+import { SetData } from '../setData';
+
+
+@Component({
+  selector: 'app-vessel-user-config',
+  templateUrl: './vessel-user-config.component.html',
+  styleUrls: ['./vessel-user-config.component.scss'],
+  providers: [NgbModalConfig, NgbModal]
+})
+export class VesselUserConfigComponent implements OnInit {
+
+  selectedVessel: any;
+  keys: any = [];
+  usersDropListDisable: boolean;
+  nextButtonDisable: boolean;
+  vesselsInfoArray: any;
+  selectedUsers: any;
+  closeResult: string;
+  selectedUserArray: any = [];
+  selectedUserObject: any;
+  vslRecords: any;
+
+
+
+  constructor(
+    private router: Router,
+    private data: DataService,
+    private httpService: HttpClient,
+    config: NgbModalConfig,
+    private modalService: NgbModal,
+    private ipc: IpcCal,
+    private ser: AppService,
+    private setData: SetData
+
+  ) {
+    alert("constructor");
+
+    this.ipc.checkVesselAvail().then((value) => {
+      console.log(value)
+
+      this.vslRecords=value;
+
+      //this.vslRecords = 0;
+      if (this.vslRecords === 0) {
+
+        let a = this.ser.onRetrieveVesselInfo();
+        a.subscribe(res => {
+
+          console.log(res);
+
+          console.log('SUCCESSFULLY VESSEL INFO INSERTED...')
+
+          config.backdrop = 'static';
+          config.keyboard = false;
+          this.httpService.get('./assets/array2.json').subscribe(
+            array => {
+              this.vesselsInfoArray = array;
+              for (let i = 0; i < this.vesselsInfoArray.length; i++) {
+                this.keys.push(Object.keys(this.vesselsInfoArray[i])[0]);
+              }
+            })
+        })
+      }
+      else {
+        this.router.navigate(['/login']);
+      }
+
+    })
+  }
+
+  selectVessel(event, arrayKey) {
+    this.selectedVessel = arrayKey;
+    let a = this.vesselsInfoArray.filter(a => {
+      if (Object.keys(a)[0] == this.selectedVessel) {
+        this.selectedUserObject = (Object.values(a)[0]);
+        this.selectedUserArray = Object.values(this.selectedUserObject);  //convert object to array 
+      }
+    });
+    this.usersDropListDisable = true;
+    this.nextButtonDisable = false;
+  }
+
+  selectUser() {
+    this.nextButtonDisable = true;
+  }
+
+  modalWindowModify() {
+    this.router.navigate(['/firstPage']);
+  }
+  modalWindowConfirm() {
+    this.router.navigate(['/login'])
+  }
+
+
+  form = new FormGroup({
+    username: new FormControl('', Validators.required),
+    vessel: new FormControl('', Validators.required),
+  });
+
+  get username() {
+    return this.form.get('username');
+  }
+
+  nextButton(content) {
+    this.selectedUsers = this.form.value.username;
+    this.data.storage(this.selectedUsers);
+    this.modalService.open(content);
+  }
+
+  ngOnInit() {
+    alert("ngOnInit");
+  }
+
+}

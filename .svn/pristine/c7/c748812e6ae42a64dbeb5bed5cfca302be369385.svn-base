@@ -1,0 +1,97 @@
+import { NgModule } from '@angular/core';
+@NgModule({})
+export class SetData {
+    constructor() {
+
+    }
+
+    onSetDefCreate(formData,cmnyCatInterId){
+        return new Promise((resolve, reject) => {
+            
+
+            let AUDIT_TRACKING_NUMBER = formData.comments_by_auditor;
+            let COMPANY_ID = cmnyCatInterId[0];
+            let VESSEL_CODE = 'SPA';
+            let AUDIT_CATEGORY = cmnyCatInterId[1];
+            let AUDIT_TYPE = cmnyCatInterId[2];
+            let AUDIT_INTERVAL = cmnyCatInterId[3];
+            let AUDIT_DATE = '2022-03-05';
+            let AUDIT_PORT = 'APORT001';
+            let CREATED_USER_ID = '101';
+            let CREATION_DATE = '2033-03-05';
+
+            let insertAuditCodeInfo=[AUDIT_TRACKING_NUMBER];
+            insertAuditCodeInfo.push(COMPANY_ID);
+            insertAuditCodeInfo.push(VESSEL_CODE);
+            insertAuditCodeInfo.push(AUDIT_CATEGORY);
+            insertAuditCodeInfo.push(AUDIT_TYPE);
+            insertAuditCodeInfo.push(AUDIT_INTERVAL);
+            insertAuditCodeInfo.push(AUDIT_DATE);
+            insertAuditCodeInfo.push(AUDIT_PORT);
+            insertAuditCodeInfo.push(CREATED_USER_ID);
+            insertAuditCodeInfo.push(CREATION_DATE);
+     
+
+
+            let DEFICIENCY_ID = formData.serial_no;
+            let COMPANY_ID_MA = cmnyCatInterId[0]; 
+            let AUDIT_TRACKING_NUMBER_MA = 'ATNO001';
+            let CODE_ID = 'A01';
+            let CODE_REF_ID = 'A01-01';
+            let ROOT_CAUSE_ANALYSIS = 'ROO';
+            let CAUSE_ID = 'S1';
+            let STATUS = 'STA001';
+            let DEFICIENCY_TYPE = 'DEFTY001';
+            let USER_NAME = 'SASI123';
+            let DATE_INS = '2011-05-06';
+
+            let insertMaDefData=[DEFICIENCY_ID];
+            insertMaDefData.push(COMPANY_ID_MA);
+            insertMaDefData.push(AUDIT_TRACKING_NUMBER_MA);
+            insertMaDefData.push(CODE_ID);
+            insertMaDefData.push(CODE_REF_ID);
+            insertMaDefData.push(ROOT_CAUSE_ANALYSIS);
+            insertMaDefData.push(CAUSE_ID);
+            insertMaDefData.push(STATUS);
+            insertMaDefData.push(DEFICIENCY_TYPE);
+            insertMaDefData.push(USER_NAME);
+            insertMaDefData.push(DATE_INS);
+
+            let trx_no='1';
+            let insertDefData=[trx_no];
+            let target_date='1995-02-02';
+            let close_date='2001-02-02';
+            let UPDATED_PLACE='b';
+            let Username='Sasidharan';
+            let Date_ins='2011-03-04';
+
+            //insertDefData.push(trx_no);
+            insertDefData.push(formData.serial_no);
+            insertDefData.push(formData.remarks);
+            insertDefData.push(formData.accept_cap_by_auditor);
+            insertDefData.push(formData.details_of_nc);
+            insertDefData.push(target_date);
+            insertDefData.push(formData.corrective_action_plan);
+            insertDefData.push(formData.comments_by_auditor);
+            insertDefData.push(formData.ship_revised_by_cap);
+            insertDefData.push(formData.accept_revised_cap_by_auditor);
+            insertDefData.push(close_date);
+            insertDefData.push(formData.preventive_action);
+            insertDefData.push(formData.error_check);
+            insertDefData.push(UPDATED_PLACE);
+            insertDefData.push(Username);
+            insertDefData.push(Date_ins);
+
+            console.log('insertAuditCodeInfo'+insertAuditCodeInfo)
+            console.log('insertMaDefData'+insertMaDefData)
+            console.log('insertDefData'+insertDefData)
+
+            let allData=[insertAuditCodeInfo];
+            allData.push(insertMaDefData);
+            allData.push(insertDefData);
+            resolve(allData);
+        })
+    }
+    
+
+}

@@ -1,0 +1,119 @@
+{
+  "name": "vbta",
+  "version": "0.0.0",
+  "main": "main.js",
+  "files": [
+    "./prod_build/",
+    "./electron-app/main.js"
+  ],
+  "build": {
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "extraFiles": [
+        "node_modules/puppeteer/.local-chromium/**/*",
+        "./mysql-essential-5.1.45-win32.msi",
+        "./mms_db_local.sql",
+        "./dbcv.cmd"
+      ]
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "SasidharanR",
+        "repo": "electron-updater-complete-example",
+        "vPrefixedTagName": "true",
+        "token": "2efd0844102487704e0e82d719d7ff6fb28c839e"
+      }
+    ]
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "electron-packager .",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "electron": "ng build && electron .",
+    "pack": "electron-builder --dir",
+    "dist": "ng build && electron-builder",
+    "devbuild": "ng build && electron .",
+    "direlect": "ng serve && electron .",
+    "dd": "electron .",
+    "buildjs": "tsc main.ts"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^7.2.15",
+    "@angular/cdk": "^7.3.7",
+    "@angular/common": "~7.2.0",
+    "@angular/compiler": "~7.2.0",
+    "@angular/core": "~7.2.0",
+    "@angular/forms": "~7.2.0",
+    "@angular/material": "^7.3.7",
+    "@angular/platform-browser": "~7.2.0",
+    "@angular/platform-browser-dynamic": "~7.2.0",
+    "@angular/router": "~7.2.0",
+    "@fortawesome/fontawesome-free": "^5.8.1",
+    "@types/chart.js": "^2.7.52",
+    "@types/jquery": "^3.3.29",
+    "angular-bootstrap-md": "^7.5.1",
+    "angular2-materialize": "^15.1.10",
+    "bootstrap": "^3.4.1",
+    "chart.js": "^2.5.0",
+    "core-js": "^2.5.4",
+    "electron-dialogbox": "^0.3.4",
+    "electron-log": "^3.0.5",
+    "electron-progressbar": "^1.2.0",
+    "electron-updater": "^4.0.6",
+    "font-awesome": "^4.7.0",
+    "hammerjs": "^2.0.8",
+    "jquery": "^3.4.1",
+    "knex": "^0.16.5",
+    "materialize-css": "^1.0.0-rc.2",
+    "mysql": "^2.17.1",
+    "ngx-electron": "^2.1.1",
+    "ngx-toastr": "^10.0.4",
+    "popper": "^1.0.1",
+    "puppeteer": "^1.17.0",
+    "rxjs": "~6.3.3",
+    "sqlite3": "^4.0.6",
+    "tslib": "^1.9.0",
+    "typescript-compiler": "^1.4.1-2",
+    "zone.js": "~0.8.26"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular/cli": "~7.3.8",
+    "@angular/compiler-cli": "~7.2.0",
+    "@angular/language-service": "~7.2.0",
+    "@types/jasmine": "~2.8.8",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^8.9.5",
+    "asar": "^2.0.1",
+    "codelyzer": "~4.5.0",
+    "electron": "4.0.6",
+    "electron-builder": "^20.39.0",
+    "electron-packager": "^13.1.1",
+    "electron-reload": "^1.4.0",
+    "electron-winstaller": "^3.0.4",
+    "jasmine-core": "~2.99.1",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~4.0.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-jasmine": "~1.1.2",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "protractor": "~5.4.0",
+    "ts-node": "~7.0.0",
+    "tslint": "~5.11.0",
+    "typescript": "3.2.4"
+  }
+}

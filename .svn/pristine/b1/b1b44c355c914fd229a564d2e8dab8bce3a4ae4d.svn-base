@@ -1,0 +1,60 @@
+
+var mysql = require('mysql');
+var connection ;
+exports.createConnection = () => {
+  connection= mysql.createConnection({
+  host: '192.168.1.80',
+  port: 3306,
+  user: 'mms',
+  password: 'Bsol@123', // or the original password : 'apaswword'
+  database: 'mms_db'
+});
+console.log('connection created')
+
+}
+
+exports.executeQuery = (query,userData) => {
+    return new Promise((resolve, reject) => {
+      // connect to mysql
+      connection.connect((err) => {
+        // in case of error
+        if (err) {
+          console.log(err.code);
+          console.log(err.fatal)
+        } else {
+          // Perform a query
+         // $query = "SELECT count(*) as isAvail FROM MA_USER where USERNAME=? and PASSWORD=?";
+         // $query = "SELECT count(*) as isAvail FROM ma_user where USERNAME=? and PASSWORD=?";
+
+          connection.query(query, userData, (err, result, fields) => {
+          
+            if (err) {
+              console.log("An error ocurred performing the query.");
+              console.log(err);
+              reject();
+  
+              console.log("args 6")
+              // Close the connection
+              connection.end(function () {
+                console.log('connection ended')
+                // The connection has been closed
+              });
+            } else {
+              console.log("Query succesfully executed", result);
+              resolve(result);
+            }
+          });
+        }
+      });
+  
+    })
+  
+  }
+
+  exports.closeConnection = () => {
+  connection.end(function () {
+    // The connection has been closed
+   console.log('connection ended')
+  });
+
+}

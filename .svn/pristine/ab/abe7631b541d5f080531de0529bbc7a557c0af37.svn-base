@@ -1,0 +1,148 @@
+
+// .main{
+//     height: 100%;
+//     width: 100%;
+//     overflow: scroll;
+// }
+
+
+// .mat-expansion-panel {
+//      background: rgba(0,0,0,.04);
+// }
+
+// ::ng-deep .mat-expansion-panel-body {
+//     padding: 24px 24px 16px;
+// }
+
+.btn-group .btn:hover {
+    background-color: rgb(59, 67, 70) !important;
+}
+
+
+.my-class{
+    display:none;
+}
+
+.my-class1{
+    display:block;
+}
+
+
+.col-wrap{
+    word-wrap: break-word;
+    min-width: 160px;
+    max-width: 160px;
+    white-space:normal;
+}
+
+
+.modalHead{
+background-color: rgb(95, 107, 218);
+color:white;
+}
+
+::ng-deep .mat-form-field .mat-input-element {
+    color: slategray;
+}
+::ng-deep .mat-form-field .mat-form-field-label {
+    color: slategray!important;
+}
+::ng-deep .mat-form-field .mat-form-field-underline {
+    background-color: slategray;
+}
+::ng-deep .mat-form-field .mat-form-field-ripple {
+    background-color: slategray;
+}
+::ng-deep .mat-form-field .mat-form-field-required-marker {
+    color: slategray;
+}
+
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+    color: #ff884d!important;
+}
+::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: #ff884d;
+}
+::ng-deep .mat-form-field.mat-focused .mat-form-field-required-marker {
+    color: #ff884d;
+}
+
+
+
+
+// ::ng-deep {
+//     // .mat-form-field-appearance-outline .mat-form-field-outline {
+//     //    color: rgb(0, 183, 255);
+//     // }
+
+//     // .mat-form-field-outline {
+//     //     color: red;
+//     //  }
+//     // mat-form-field {
+//     //    .mat-hint, input, ::placeholder, .mat-form-field-label {
+//     //       color: red;
+//     //    }
+    
+//  }
+
+
+
+
+  @-webkit-keyframes pulse-animation {
+	0% { -webkit-transform: scale(1); }
+	25% { -webkit-transform: scale(1); }
+    50% { -webkit-transform: scale(1.2) }
+    75% { -webkit-transform: scale(1); }
+    100% { -webkit-transform: scale(1); }
+}
+// ::-webkit-scrollbar {
+//     width: 6px;
+// }
+// ::-webkit-scrollbar-track {
+//     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// }
+// ::-webkit-scrollbar-thumb {
+//     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// }
+.defCardBody{
+   overflow-x: scroll;
+}
+
+.tableCard {
+    margin-top: 2em;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    height:500px;
+    overflow: scroll;
+   
+  }
+
+.deficiencyTable{
+  //  height:200px;
+    overflow: scroll;
+}
+.thead,.tbody{
+    overflow: scroll;
+}
+
+.highlighted{
+    background: #42A948; /* green */
+    color:white;
+  }
+
+
+
+  .example-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+  }
+  
+  .example-radio-button {
+    margin: 5px;
+  }
+
+  .auditSelectBtn{
+    margin:auto;
+    display:block;
+  }

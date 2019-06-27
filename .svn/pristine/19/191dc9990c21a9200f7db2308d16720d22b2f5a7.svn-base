@@ -1,0 +1,457 @@
+CREATE DATABASE  IF NOT EXISTS `mms_db_local` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `mms_db_local`;
+-- MySQL dump 10.13  Distrib 5.7.12, for Win64 (x86_64)
+--
+-- Host: 192.168.1.80    Database: mms_db_local
+-- ------------------------------------------------------
+-- Server version	5.7.17-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `audit_deficiency_ref`
+--
+
+DROP TABLE IF EXISTS `audit_deficiency_ref`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `audit_deficiency_ref` (
+  `TXN_SEQ_NO` int(11) NOT NULL,
+  `DEFICIENCY_ID` varchar(30) NOT NULL,
+  `REMARK` varchar(45) DEFAULT NULL,
+  `ACCEPT_CAP_BY_AUDITOR` varchar(45) DEFAULT NULL,
+  `DETAILS_OF_DEFICIENCY` varchar(200) DEFAULT NULL,
+  `TARGET_DATE` datetime DEFAULT NULL,
+  `CORRECTIVE_ACTION_PLAN` varchar(100) NOT NULL,
+  `COMMENTS_BY_AUDITOR` varchar(45) DEFAULT NULL,
+  `SHIP_REVISED_CAP` varchar(45) DEFAULT NULL,
+  `ACCEPT_REVISED_CAP_BY_AUDITOR` char(3) NOT NULL,
+  `CLOSED_DATE` datetime DEFAULT NULL,
+  `PREVENTIVE_ACTION` varchar(200) NOT NULL,
+  `ERROR_CHECK` char(2) NOT NULL,
+  `UPDATED_PLACE` char(1) NOT NULL,
+  `USER_NAME` varchar(45) NOT NULL,
+  `DATE_INS` datetime NOT NULL,
+  PRIMARY KEY (`TXN_SEQ_NO`,`DEFICIENCY_ID`),
+  KEY `ref_deficiency_id_idx` (`DEFICIENCY_ID`),
+  CONSTRAINT `ref_deficiency_id` FOREIGN KEY (`DEFICIENCY_ID`) REFERENCES `ma_audit_deficiency` (`DEFICIENCY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `audit_deficiency_ref`
+--
+
+LOCK TABLES `audit_deficiency_ref` WRITE;
+/*!40000 ALTER TABLE `audit_deficiency_ref` DISABLE KEYS */;
+/*!40000 ALTER TABLE `audit_deficiency_ref` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_category`
+--
+
+DROP TABLE IF EXISTS `ma_audit_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_category` (
+  `CATEGORY_ID` int(11) NOT NULL,
+  `CATEGORY_NAME` varchar(45) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `ACTIVE_STATUS` char(1) NOT NULL,
+  PRIMARY KEY (`CATEGORY_ID`,`COMPANY_ID`),
+  KEY `category_company_id_idx` (`COMPANY_ID`),
+  CONSTRAINT `category_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_category`
+--
+
+LOCK TABLES `ma_audit_category` WRITE;
+/*!40000 ALTER TABLE `ma_audit_category` DISABLE KEYS */;
+INSERT INTO `ma_audit_category` VALUES (1,'ISM',1,'Y'),(2,'ISPS',1,'Y'),(3,'EMS',1,'Y'),(4,'NAV',1,'Y'),(5,'SAFETY',1,'Y');
+/*!40000 ALTER TABLE `ma_audit_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_code`
+--
+
+DROP TABLE IF EXISTS `ma_audit_code`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_code` (
+  `CODE_ID` varchar(5) NOT NULL,
+  `AUDIT_CATEGORY_ID` int(11) NOT NULL,
+  `CODE_NAME` varchar(45) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  PRIMARY KEY (`CODE_ID`,`AUDIT_CATEGORY_ID`,`COMPANY_ID`),
+  KEY `code_company_id_idx` (`COMPANY_ID`),
+  KEY `code_audit_category_id_idx` (`AUDIT_CATEGORY_ID`),
+  CONSTRAINT `code_audit_category_id` FOREIGN KEY (`AUDIT_CATEGORY_ID`) REFERENCES `ma_audit_category` (`CATEGORY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `code_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_code`
+--
+
+LOCK TABLES `ma_audit_code` WRITE;
+/*!40000 ALTER TABLE `ma_audit_code` DISABLE KEYS */;
+INSERT INTO `ma_audit_code` VALUES ('A01',1,'Ship\'s Certificate',1),('A02',1,'Crew',1),('A03',1,'Accommodation',1),('A04',1,'Food and Catering',1),('A05',1,'Working Space',1),('A06',1,'Life Saving Appliances',1),('A07',1,'Fire Fighting Appliances',1),('A08',1,'Accident Prevention',1),('A09',1,'Safety in General',1),('A10',1,'Alarms - signals',1),('A11',1,'Cargo',1),('A12',1,'Load Lines',1),('A13',1,'Mooring Arrangements',1),('A14',1,'Propulsion & Aux. Machinery',1),('A15',1,'Navigation',1),('A16',1,'Radio',1),('A17',1,'Marine Pllution - Annex I',1),('A18',1,'Tankers (def. Specify for)',1),('A19',1,' Marine Pollution - Annex II',1),('A20',1,'SOLAS Related Operational',1),('A21',1,' MARPOL Related Operational',1),('A22',1,'Marine Pollution - Annex III',1),('A23',1,'Other',1),('A24',1,'Nil',1),('B01',2,'Ship\'s Certificate',1),('B02',2,'Crew',1),('D01',4,'Navigation Equipment',1),('D02',4,'GMDSS Equipment',1),('D03',4,'Passage Plan',1),('D04',4,'Charts & Publications',1),('D05',4,'Recordkeeping',1),('D06',4,'Procedure',1),('D07',4,'Personal',1),('D08',4,'Others',1),('D09',4,'Nil',1);
+/*!40000 ALTER TABLE `ma_audit_code` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_code_ref`
+--
+
+DROP TABLE IF EXISTS `ma_audit_code_ref`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_code_ref` (
+  `CODE_REF_ID` varchar(6) NOT NULL,
+  `CODE_ID` varchar(5) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `CODE_REF_VAL` varchar(200) DEFAULT NULL,
+  `ACTIVE_STATUS` char(1) NOT NULL,
+  `USER_INS` varchar(45) DEFAULT NULL,
+  `DATE_INS` datetime DEFAULT NULL,
+  PRIMARY KEY (`CODE_REF_ID`,`CODE_ID`,`COMPANY_ID`),
+  KEY `ref_code_company_id_idx` (`COMPANY_ID`),
+  KEY `ref_code_id` (`CODE_ID`),
+  CONSTRAINT `ref_code_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ref_code_id` FOREIGN KEY (`CODE_ID`) REFERENCES `ma_audit_code` (`CODE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_code_ref`
+--
+
+LOCK TABLES `ma_audit_code_ref` WRITE;
+/*!40000 ALTER TABLE `ma_audit_code_ref` DISABLE KEYS */;
+INSERT INTO `ma_audit_code_ref` VALUES ('A01-01','A01',1,'Objectives','Y','DBO','2019-06-07 00:00:00'),('A01-02','A01',1,'SAFETY AND ENVIRONMENTAL-PROTECTION POLICY','Y','DBO','2019-06-07 00:00:00'),('A01-03','A01',1,'COMPANY RESPONSIBILITIES AND AUTHORITY','Y','DBO','2019-06-07 00:00:00'),('A01-04','A01',1,'DESIGNATED PERSON (S) ','Y','DBO','2019-06-07 00:00:00'),('A01-05','A01',1,'MASTER\'S RESPONSIBILITY AND AUTHORITY','Y','DBO','2019-06-07 00:00:00'),('A01-06','A01',1,'RESOURCES AND PERSONNEL','Y','DBO','2019-06-07 00:00:00'),('A01-07','A01',1,'DEVELOPMENT OF PLANS FOR SHIPBOARD OPERATIONS ','Y','DBO','2019-06-07 00:00:00'),('A01-08','A01',1,'EMERGENCY PREPAREDNESS','Y','DBO','2019-06-07 00:00:00'),('A01-09','A01',1,' REPORTS AND ANALYSIS OF NON-CONFORMITIES, ACCIDENTS AND HAZARDOUS OCCURRENCES','Y','DBO','2019-06-07 00:00:00'),('A01-10','A01',1,'10 MAINTENANCE OF THE SHIP AND EQUIPMENT','Y','DBO','2019-06-07 00:00:00'),('A01-11','A01',1,'DOCUMENTATION','Y','DBO','2019-06-07 00:00:00'),('A01-12','A01',1,'COMPANY VERIFICATION, REVIEW AND EVALUATION','Y','DBO','2019-06-07 00:00:00'),('A01-13','A01',1,'CERTIFICATION AND PERIODICAL VERIFICATION','Y','DBO','2019-06-07 00:00:00'),('A01-14','A01',1,'INTERIM CERTIFICATE','Y','DBO','2019-06-07 00:00:00'),('A01-15','A01',1,'VERIFICATION','Y','DBO','2019-06-07 00:00:00');
+/*!40000 ALTER TABLE `ma_audit_code_ref` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_deficiency`
+--
+
+DROP TABLE IF EXISTS `ma_audit_deficiency`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_deficiency` (
+  `DEFICIENCY_ID` varchar(30) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `AUDIT_TRACKING_NUMBER` varchar(30) NOT NULL,
+  `CODE_ID` varchar(6) NOT NULL,
+  `CODE_REF_ID` varchar(10) NOT NULL,
+  `ROOT_CAUSE_ANALYSIS` char(3) NOT NULL,
+  `CAUSE_ID` varchar(5) NOT NULL,
+  `STATUS` char(46) NOT NULL,
+  `DEFICIENCY_TYPE` varchar(10) NOT NULL,
+  `USER_NAME` varchar(45) NOT NULL,
+  `DATE_INS` varchar(45) NOT NULL,
+  PRIMARY KEY (`DEFICIENCY_ID`,`COMPANY_ID`),
+  KEY `deficiency_audit_number_idx` (`AUDIT_TRACKING_NUMBER`),
+  KEY `deficiency_company_id_idx` (`COMPANY_ID`),
+  KEY `deficiency_cause_id_idx` (`CAUSE_ID`),
+  KEY `deficiency_code_id_idx` (`CODE_ID`),
+  KEY `deficiency_code_ref_id_idx` (`CODE_REF_ID`),
+  CONSTRAINT `deficiency_audit_number` FOREIGN KEY (`AUDIT_TRACKING_NUMBER`) REFERENCES `ma_audit_info` (`AUDIT_TRACKING_NUMBER`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `deficiency_cause_id` FOREIGN KEY (`CAUSE_ID`) REFERENCES `ma_deficiency_cause` (`CAUSE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `deficiency_code_id` FOREIGN KEY (`CODE_ID`) REFERENCES `ma_audit_code` (`CODE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `deficiency_code_ref_id` FOREIGN KEY (`CODE_REF_ID`) REFERENCES `ma_audit_code_ref` (`CODE_REF_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `deficiency_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_deficiency`
+--
+
+LOCK TABLES `ma_audit_deficiency` WRITE;
+/*!40000 ALTER TABLE `ma_audit_deficiency` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ma_audit_deficiency` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_info`
+--
+
+DROP TABLE IF EXISTS `ma_audit_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_info` (
+  `AUDIT_TRACKING_NUMBER` varchar(30) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `VESSEL_CODE` varchar(20) NOT NULL,
+  `AUDIT_CATEGORY` int(11) NOT NULL,
+  `AUDIT_TYPE` int(11) NOT NULL,
+  `AUDIT_INTERVAL` int(11) NOT NULL,
+  `AUDIT_DATE` datetime NOT NULL,
+  `AUDIT_PORT` varchar(45) NOT NULL,
+  `CREATED_USER_ID` int(11) NOT NULL,
+  `CREATION_DATE` datetime NOT NULL,
+  PRIMARY KEY (`AUDIT_TRACKING_NUMBER`,`COMPANY_ID`),
+  KEY `info_audit_category_idx` (`AUDIT_CATEGORY`),
+  KEY `info_audit_type_idx` (`AUDIT_TYPE`),
+  KEY `info_audit_interval_idx` (`AUDIT_INTERVAL`),
+  KEY `info_vessel_code_idx` (`VESSEL_CODE`),
+  KEY `info_created_user_id_idx` (`CREATED_USER_ID`),
+  KEY `info_company_id_idx` (`COMPANY_ID`),
+  CONSTRAINT `info_audit_category` FOREIGN KEY (`AUDIT_CATEGORY`) REFERENCES `ma_audit_category` (`CATEGORY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `info_audit_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `info_audit_interval` FOREIGN KEY (`AUDIT_INTERVAL`) REFERENCES `ma_audit_interval` (`INTERVAL_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `info_audit_type` FOREIGN KEY (`AUDIT_TYPE`) REFERENCES `ma_audit_type` (`TYPE_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `info_created_user_id` FOREIGN KEY (`CREATED_USER_ID`) REFERENCES `ma_user` (`USER_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `info_vessel_code` FOREIGN KEY (`VESSEL_CODE`) REFERENCES `ma_vessel_info` (`VESSEL_CODE`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_info`
+--
+
+LOCK TABLES `ma_audit_info` WRITE;
+/*!40000 ALTER TABLE `ma_audit_info` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ma_audit_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_interval`
+--
+
+DROP TABLE IF EXISTS `ma_audit_interval`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_interval` (
+  `INTERVAL_ID` int(11) NOT NULL,
+  `INTERVAL_NAME` varchar(45) NOT NULL,
+  `COMPNAY_ID` int(11) NOT NULL,
+  `ACTIVE_STAUS` char(1) NOT NULL,
+  PRIMARY KEY (`INTERVAL_ID`,`COMPNAY_ID`),
+  KEY `interval_company_id_idx` (`COMPNAY_ID`),
+  CONSTRAINT `interval_company_id` FOREIGN KEY (`COMPNAY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_interval`
+--
+
+LOCK TABLES `ma_audit_interval` WRITE;
+/*!40000 ALTER TABLE `ma_audit_interval` DISABLE KEYS */;
+INSERT INTO `ma_audit_interval` VALUES (1,'DAA MONTHLY',1,'Y'),(2,'DAB QUARTERLY',1,'Y'),(3,'DAC OTHER',1,'Y');
+/*!40000 ALTER TABLE `ma_audit_interval` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_audit_type`
+--
+
+DROP TABLE IF EXISTS `ma_audit_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_audit_type` (
+  `TYPE_ID` int(11) NOT NULL,
+  `AUDIT_TYPE` varchar(45) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `AUDIT_STATUS` char(1) NOT NULL,
+  PRIMARY KEY (`TYPE_ID`,`COMPANY_ID`),
+  KEY `type_company_id_idx` (`COMPANY_ID`),
+  CONSTRAINT `type_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_audit_type`
+--
+
+LOCK TABLES `ma_audit_type` WRITE;
+/*!40000 ALTER TABLE `ma_audit_type` DISABLE KEYS */;
+INSERT INTO `ma_audit_type` VALUES (1,'DA INTERNAL',1,'Y'),(2,'DB EXTERNAL',1,'Y');
+/*!40000 ALTER TABLE `ma_audit_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_company`
+--
+
+DROP TABLE IF EXISTS `ma_company`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_company` (
+  `COMPANY_ID` int(11) NOT NULL,
+  `COMPANY_NAME` varchar(45) NOT NULL,
+  `COMPANY_ADDRESS` varchar(200) NOT NULL,
+  `ACTIVE_STATUS` char(1) NOT NULL,
+  `USER_INS` varchar(45) NOT NULL,
+  `DATE_INS` varchar(45) NOT NULL,
+  PRIMARY KEY (`COMPANY_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_company`
+--
+
+LOCK TABLES `ma_company` WRITE;
+/*!40000 ALTER TABLE `ma_company` DISABLE KEYS */;
+INSERT INTO `ma_company` VALUES (1,'MMS','JAPAN','Y','dbo','2019-06-07');
+/*!40000 ALTER TABLE `ma_company` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_deficiency_cause`
+--
+
+DROP TABLE IF EXISTS `ma_deficiency_cause`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_deficiency_cause` (
+  `CAUSE_ID` varchar(5) NOT NULL,
+  `CAUSE_VAL` varchar(45) NOT NULL,
+  `COMPNAY_ID` int(11) NOT NULL,
+  `ACTIVE_STATUS` char(1) NOT NULL,
+  PRIMARY KEY (`CAUSE_ID`,`COMPNAY_ID`),
+  KEY `cause_company_id_idx` (`COMPNAY_ID`),
+  CONSTRAINT `cause_company_id` FOREIGN KEY (`COMPNAY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_deficiency_cause`
+--
+
+LOCK TABLES `ma_deficiency_cause` WRITE;
+/*!40000 ALTER TABLE `ma_deficiency_cause` DISABLE KEYS */;
+INSERT INTO `ma_deficiency_cause` VALUES ('S1','Maintenance Deficiency',1,'Y'),('S2','Improper Handling',1,'Y'),('S3','Lack of Knowledge',1,'Y'),('S4','Negligence',1,'Y'),('S5','Design Deficient',1,'Y'),('S6','Material/Process',1,'Y'),('S7','Others',1,'Y');
+/*!40000 ALTER TABLE `ma_deficiency_cause` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_user`
+--
+
+DROP TABLE IF EXISTS `ma_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_user` (
+  `USER_ID` int(11) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `USERNAME` varchar(45) NOT NULL,
+  `FIRST_NAME` varchar(45) DEFAULT NULL,
+  `LAST_NAME` varchar(45) DEFAULT NULL,
+  `PASSWORD` varchar(45) DEFAULT NULL,
+  `ACTIVE_STATUS` char(2) NOT NULL,
+  `PHONE_NO` int(11) DEFAULT NULL,
+  `USER_ROLE` int(11) NOT NULL,
+  `DATE_INS` datetime NOT NULL,
+  PRIMARY KEY (`USER_ID`,`COMPANY_ID`,`USERNAME`),
+  KEY `user_company_id_idx` (`COMPANY_ID`),
+  CONSTRAINT `user_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_user`
+--
+
+LOCK TABLES `ma_user` WRITE;
+/*!40000 ALTER TABLE `ma_user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ma_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_user_vessel_access`
+--
+
+DROP TABLE IF EXISTS `ma_user_vessel_access`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_user_vessel_access` (
+  `ACCESS_ID` int(11) NOT NULL,
+  `USER_ID` int(11) NOT NULL,
+  `VESSEL_CODE` varchar(10) NOT NULL,
+  `DATE_INS` datetime NOT NULL,
+  PRIMARY KEY (`ACCESS_ID`),
+  KEY `acess_id_idx` (`USER_ID`),
+  KEY `acess_vessel_code_idx` (`VESSEL_CODE`),
+  CONSTRAINT `access_user_id` FOREIGN KEY (`USER_ID`) REFERENCES `ma_user` (`USER_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `access_vessel_code` FOREIGN KEY (`VESSEL_CODE`) REFERENCES `ma_vessel_info` (`VESSEL_CODE`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_user_vessel_access`
+--
+
+LOCK TABLES `ma_user_vessel_access` WRITE;
+/*!40000 ALTER TABLE `ma_user_vessel_access` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ma_user_vessel_access` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ma_vessel_info`
+--
+
+DROP TABLE IF EXISTS `ma_vessel_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ma_vessel_info` (
+  `VESSEL_CODE` varchar(20) NOT NULL,
+  `COMPANY_ID` int(11) NOT NULL,
+  `VESSEL_NAME` varchar(100) NOT NULL,
+  `IMO_NUMBER` int(11) NOT NULL,
+  `OFFICIAL_NUMBER` int(11) NOT NULL,
+  `ACTIVE_STATUS` char(1) NOT NULL,
+  `USER_INS` varchar(45) NOT NULL,
+  `DATE_INS` datetime NOT NULL,
+  PRIMARY KEY (`VESSEL_CODE`,`COMPANY_ID`),
+  KEY `info_company_id_idx` (`COMPANY_ID`),
+  CONSTRAINT `info_company_id` FOREIGN KEY (`COMPANY_ID`) REFERENCES `ma_company` (`COMPANY_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ma_vessel_info`
+--
+
+LOCK TABLES `ma_vessel_info` WRITE;
+/*!40000 ALTER TABLE `ma_vessel_info` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ma_vessel_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping events for database 'mms_db_local'
+--
+
+--
+-- Dumping routines for database 'mms_db_local'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2019-06-12 12:41:54
