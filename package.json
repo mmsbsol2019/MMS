@@ -1,5 +1,5 @@
 {
-  "name": "vbta",
+  "name": "mms",
   "version": "0.0.0",
   "main": "main.js",
   "files": [
@@ -26,10 +26,10 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "SasidharanR",
-        "repo": "electron-updater-complete-example",
+        "owner": "mmsbsol2019",
+        "repo": "MMS",
         "vPrefixedTagName": "true",
-        "token": "2efd0844102487704e0e82d719d7ff6fb28c839e"
+        "token": "d17520100d3cd297db1293c1147c451a4477e340"
       }
     ]
   },
@@ -40,16 +40,18 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron": "ng build && electron .",
+    "electron": "ng build --prod && electron .",
     "pack": "electron-builder --dir",
     "dist": "ng build --prod && electron-builder",
     "devbuild": "ng build && electron .",
     "direlect": "ng serve && electron .",
     "dd": "electron .",
-    "buildjs": "tsc main.ts"
+    "buildjs": "tsc main.ts",
+    "publish": "electron-builder build -p always"
   },
   "private": true,
   "dependencies": {
+    
     "electron-dialogbox": "^0.3.4",
     "electron-log": "^3.0.5",
     "electron-progressbar": "^1.2.0",
@@ -86,10 +88,8 @@
     "codelyzer": "~4.5.0",
     "core-js": "^2.5.4",
     "electron": "4.0.6",
-    "electron-builder": "^20.39.0",
-    "electron-packager": "^13.1.1",
     "electron-reload": "^1.4.0",
-    "electron-winstaller": "^3.0.4",
+    "electron-builder": "^20.40.2",
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "jasmine-core": "~2.99.1",
